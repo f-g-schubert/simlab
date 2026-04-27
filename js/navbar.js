@@ -22,13 +22,8 @@ class NavBar extends HTMLElement {
 
                 <nav id="navMenu">
                     <ul>
-                        <li class="dropdown">
-                            <button class="dropbtn">Seiten ▾</button>
-                            <ul class="dropdown-content">
-                                <li><a href="blog.html">Blog</a></li>
-                                <li><a href="projekte.html">Projekte</a></li>
-                            </ul>
-                        </li>
+                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="blog.html">Blog</a>
+                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="projekte.html">Projekte</a>
                         <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="termine-und-veranstaltungen.html">Termine und Veranstaltungen</a>
                         <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="ueber-uns.html">Über uns</a>
                         <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="impressum.html">Impressum</a>
@@ -208,6 +203,20 @@ class NavBar extends HTMLElement {
             @media (hover: hover) {
                 .dropdown:hover > .dropdown-content {
                     display: block;
+                    color: white;
+                    backdrop-filter: blur(20px);
+                    background: rgba(255,255,255,0.08);
+                    border-radius: 20px;
+                    border: 1px solid rgba(255,255,255,0.15);
+                    transition: transform 0.3s ease;
+                    padding: 13px;
+                    margin: 7px;
+                    text-decoration: none;
+                    font-weight: 500;
+                }
+
+                .user-area:hover .user-menu {
+                    display: flex;
                     color: white;
                     backdrop-filter: blur(20px);
                     background: rgba(255,255,255,0.08);
@@ -440,6 +449,13 @@ class NavBar extends HTMLElement {
 
         avatar.addEventListener("click", () => {
             userMenu.classList.toggle("active");
+        });
+
+        /* Klick außerhalb = userMenu schließen */
+        document.addEventListener("click", (e) => {
+            if (!e.composedPath().includes(this)) {
+                userMenu.classList.remove("active");
+            }
         });
 
         this.shadowRoot.addEventListener("click", (e) => {
