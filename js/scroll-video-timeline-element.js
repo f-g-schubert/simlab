@@ -11,6 +11,15 @@ class ScrollVideoTimelineElement extends HTMLElement {
         this._raf = null;
 
         this._lastIndex = -1;
+        this._isIOS = this._detectIOS();
+        this._videoLoaded = false;
+        this._lastUpdateTime = 0;
+        this._onScroll = () => this.update();
+    }
+
+    _detectIOS() {
+        const ua = navigator.userAgent;
+        return /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
     }
 
     static get observedAttributes() {
@@ -30,7 +39,16 @@ class ScrollVideoTimelineElement extends HTMLElement {
 
         if (name === "video-src") {
             this._videoSrc = newValue;
-            if (this.video) this.video.src = newValue;
+            if (this.video) {
+                // Für iOS: Quellen-Element aktualisieren statt src-Attribut
+                let source = this.shadowRoot.querySelector("source");
+                if (source) {
+                    source.src = newValue;
+                } else {
+                    this.video.src = newValue;
+                }
+                this.video.load();
+            }
         }
     }
 
@@ -47,12 +65,16 @@ class ScrollVideoTimelineElement extends HTMLElement {
     connectedCallback() {
         this.renderBase();
         this.renderItems();
+        this._attachVideoEventListeners();
         this.initObserver();
     }
 
     disconnectedCallback() {
         this.stopLoop();
         if (this._observer) this._observer.disconnect();
+        if (this._isIOS) {
+            window.removeEventListener("scroll", this._onScroll);
+        }
     }
 
     // =========================
@@ -61,8 +83,8 @@ class ScrollVideoTimelineElement extends HTMLElement {
     renderBase() {
         this.shadowRoot.innerHTML = `
             <section id="timelineScroll">
-                <video id="video" muted playsinline preload="metadata" crossorigin="anonymous">
-                    <source src="${this._videoSrc}" type="video/mp4">
+                <video id="video" muted playsinline preload="metadata" crossorigin="anonymous" webkit-playsinline>
+                    <source src="${this._videoSrc}" type="video/mp4; codecs=&quot;avc1.42E01E&quot;">
                 </video>
                 <div class="timeline"></div>
             </section>
@@ -96,6 +118,9 @@ class ScrollVideoTimelineElement extends HTMLElement {
                     -webkit-touch-callout: none;
                     max-width: 100%;
                     will-change: auto;
+                    -webkit-object-fit: cover;
+                    -webkit-object-position: center;
+                    -webkit-font-smoothing: antialiased;
                 }
 
                 .timeline {
@@ -106,6 +131,8 @@ class ScrollVideoTimelineElement extends HTMLElement {
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
+                    z-index: 10;
+                    pointer-events: auto;
                 }
 
                 .timeline::before {
@@ -125,11 +152,13 @@ class ScrollVideoTimelineElement extends HTMLElement {
                     opacity: 0.3;
                     transform: translateX(-30px);
                     transition: 0.5s;
+                    -webkit-transform: translateX(-30px);
                 }
 
                 .timeline-item.active {
                     opacity: 1;
                     transform: translateX(0);
+                    -webkit-transform: translateX(0);
                 }
 
                 .marker {
@@ -142,6 +171,7 @@ class ScrollVideoTimelineElement extends HTMLElement {
                     align-items: center;
                     justify-content: center;
                     font-size: 12px;
+                    flex-shrink: 0;
                 }
 
                 .marker.filled {
@@ -160,8 +190,28 @@ class ScrollVideoTimelineElement extends HTMLElement {
         this.video = this.shadowRoot.getElementById("video");
 
         if (this._videoSrc) {
-            this.video.src = this._videoSrc;
+            let source = this.shadowRoot.querySelector("source");
+            if (source) {
+                source.src = this._videoSrc;
+            }
+            this.video.load();
         }
+    }
+
+    _attachVideoEventListeners() {
+        if (!this.video) return;
+
+        this.video.addEventListener("canplay", () => {
+            this._videoLoaded = true;
+        }, { passive: true });
+
+        this.video.addEventListener("loadedmetadata", () => {
+            this._videoLoaded = true;
+        }, { passive: true });
+
+        this.video.addEventListener("error", (e) => {
+            console.error("Video load error:", e);
+        });
     }
 
     // =========================
@@ -205,8 +255,18 @@ class ScrollVideoTimelineElement extends HTMLElement {
             entries.forEach(entry => {
                 this._active = entry.isIntersecting;
 
-                if (this._active) this.startLoop();
-                else this.stopLoop();
+                if (this._active) {
+                    this.startLoop();
+                    // iOS: Zusätzlicher Scroll-Listener für bessere Responsivität
+                    if (this._isIOS) {
+                        window.addEventListener("scroll", this._onScroll, { passive: true });
+                    }
+                } else {
+                    this.stopLoop();
+                    if (this._isIOS) {
+                        window.removeEventListener("scroll", this._onScroll);
+                    }
+                }
             });
         });
 
@@ -252,13 +312,29 @@ class ScrollVideoTimelineElement extends HTMLElement {
         this.timeline.style.setProperty("--progress", progress);
 
         // =========================
-        // 🔥 BASELINE VIDEO (IMMER FUNKTIONIERT)
+        // VIDEO-UPDATE (MIT iOS-FALLBACK)
         // =========================
         const duration = this.video.duration;
-
-        if (duration && this.video.readyState >= 2) {
+        
+        // iOS braucht länger zum Laden von Videos
+        if (duration && !isNaN(duration) && (this._videoLoaded || this.video.readyState >= 2)) {
             const baseTarget = duration * progress;
-            this.video.currentTime += (baseTarget - this.video.currentTime) * 0.15;
+            const currentTime = this.video.currentTime || 0;
+            
+            // Smoothing: Nur aktualisieren wenn signifikante Differenz
+            const diff = Math.abs(baseTarget - currentTime);
+            const updateRate = this._isIOS ? 0.1 : 0.15;
+            
+            if (diff > 0.05) {
+                this.video.currentTime += (baseTarget - currentTime) * updateRate;
+            }
+        } else if (this._isIOS && !this._videoLoaded) {
+            // iOS: Versuche das Video zu laden, wenn nicht schon geschehen
+            setTimeout(() => {
+                if (this.video && !this._videoLoaded) {
+                    this.video.load();
+                }
+            }, 500);
         }
 
         // =========================
@@ -292,8 +368,12 @@ class ScrollVideoTimelineElement extends HTMLElement {
 
             if (itemMode === "scroll") {
                 const target = s + (e - s) * local;
-
-                this.video.currentTime += (target - this.video.currentTime) * 0.15;
+                const currentTime = this.video.currentTime || 0;
+                const diff = Math.abs(target - currentTime);
+                
+                if (diff > 0.05) {
+                    this.video.currentTime += (target - currentTime) * (this._isIOS ? 0.1 : 0.15);
+                }
             }
 
             if (itemMode === "autoplay") {
