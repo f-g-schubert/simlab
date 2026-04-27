@@ -1,0 +1,85 @@
+// Node.js (Express + JWT)
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const app = express();
+
+app.use(express.json());
+
+const SECRET = "secret";
+
+// LOGIN
+app.post("/api/login", (req, res) => {
+    const { username, password } = req.body;
+
+    if (username === "admin" && password === "1234") {
+        const token = jwt.sign({ username }, SECRET);
+        res.json({ token });
+    } else {
+        res.status(401).send("Invalid");
+    }
+});
+
+// PROTECTED
+app.get("/api/me", (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    try {
+        const user = jwt.verify(token, SECRET);
+        res.json(user);
+    } catch {
+        res.status(401).send("Unauthorized");
+    }
+});
+
+app.listen(3000);
+
+
+
+
+// PHP (JWT oder Session)
+
+// einfache Session Variante
+<?php
+session_start();
+$data = json_decode(file_get_contents("php://input"));
+
+if ($data->username === "admin" && $data->password === "1234") {
+    $_SESSION["user"] = $data->username;
+    echo json_encode(["token" => session_id()]);
+} else {
+    http_response_code(401);
+}
+
+
+// PROTECTED
+<?php
+session_start();
+
+if (!isset($_SESSION["user"])) {
+    http_response_code(401);
+    exit;
+}
+
+echo json_encode(["user" => $_SESSION["user"]]);
+
+
+
+
+
+// RULESET
+// IMMER
+Frontend → /api/*
+Backend → egal (PHP / Node / später sogar Firebase)
+DB → egal (MySQL / MongoDB)
+
+
+// Backend MUST respond with
+// Node.jsres.json({
+    firstName: "Max",
+    lastName: "Mustermann"
+});
+// PHP
+echo json_encode([
+    "firstName" => "Max",
+    "lastName" => "Mustermann"
+]);

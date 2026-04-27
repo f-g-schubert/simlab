@@ -1,0 +1,61 @@
+reveal-container-element {
+    display: block;
+    margin: 80px auto;
+}
+
+/* =========================
+    PARALLAX BACKGROUND
+========================= */
+
+.parallax {
+    height: 60vh;
+    background-image: url("../images/line.png");
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+/* =========================
+    STYLED TEXT BLOCKS
+========================= */
+/*main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 20px 60px;
+}*/
+
+/* Sections spacing */
+/*section {
+    margin: 100px 0;
+}*/
+
+/* Text allgemein */
+/*p {
+    line-height: 1.6;
+}*/
+
+/* Feature */
+.feature {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Steps */
+.steps {
+    padding-left: 10px;
+    margin: 40px 0;
+}
+
+/* Card */
+.card {
+    margin-top: 40px;
+    padding: 30px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 80px auto;
+}

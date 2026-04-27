@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Webseite</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/liquid-glass.css">
+    <link rel="icon" type="image/png" href="/icons/favicon-96x96.png?v=20260426" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg?v=20260426" />
+    <link rel="shortcut icon" href="/icons/favicon.ico?v=20260426" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=20260426" />
+    <meta name="apple-mobile-web-app-title" content="SimLab" />
+    <link rel="manifest" href="/icons/site.webmanifest?v=20260426" />
+</head>
+<body>
+
+<script src="./js/navbar.js" type="module"></script>
+<liquid-glass-navbar></liquid-glass-navbar>
+
+<main>
+    <script src="./js/carousel-element.js"></script>
+    <script src="./js/reveal-container-element.js"></script>
+    <script src="./js/scroll-video-element.js"></script>
+    <script src="./js/scroll-video-timeline-element.js"></script>
+    <script src="./js/timeline-story-element.js"></script>
+    <scrript src="./js/glass-media-section.js"></script>
+
+<carousel-element
+    images='["./images/1.jpg","./images/2.jpg","./images/3.jpg"]'
+    overlays='[
+        {
+            "image": 0,
+            "html": "<div class=\"tag\">Hotspot A</div>",
+            "x": 30,
+            "y": 40
+        }
+    ]'
+    autoplay="true"
+    interval="4000"
+    sync-group="main-carousel">
+</carousel-element>
+
+<!-- HERO -->
+<section class="hero glass">
+    <h1>Dashboard</h1>
+    <br>
+    <p style="color: darkgray;">Aktuelles rund um SimLab</p>
+</section>
+
+<!-- DASHBOARD -->
+<section class="content">
+    <!-- EREIGNISSE UND TERMINE -->
+    <div class="glass card" id="eventsPreview" onclick="window.location.href = '/termine-und-veranstaltungen.html';">
+        <h2>📅 Nächste Termine</h2>
+        <br>
+        <div class="card-content"></div>
+    </div>
+
+    <!-- BLOG -->
+    <div class="glass card" id="blogPreview" onclick="window.location.href = '/blog.html';">
+        <h2>📝 Neueste Posts</h2>
+        <br>
+        <div class="card-content"></div>
+    </div>
+
+    <!-- PROJEKTE -->
+    <div class="glass card" id="projectsPreview" onclick="window.location.href = '/projekte.html';">
+        <h2>🚀 Neueste Projekte</h2>
+        <br>
+        <div class="card-content"></div>
+    </div>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script type="module" src="./js/dashboard.js"></script>
+</section>
+
+<reveal-container-element
+    images="./images/1.jpg,./images/2.jpg,./images/3.jpg"
+    interval="3000"
+    angle="30"
+    bar-width="20"
+    bar-color="#000000"
+    bar-style="glow"
+    speed="800">
+</reveal-container-element>
+
+<section class="parallax" data-speed="0.5"></section>
+
+<scroll-video-element
+    video-src="./videos/SimLab keycard v6.mp4"
+    items='[
+        {"html":"<h2>Feature 1</h2>","start":0.1,"end":0.3,"align":"center"},
+        {"html":"<p>Details</p>","start":0.4,"end":0.6,"align":"left"}
+    ]'>
+</scroll-video-element>
+
+<scroll-video-timeline-element
+    video-src="./videos/SimLab keycard v6.mp4"
+    items='[
+        {
+            "text":"Start",
+            "pos":10,
+            "marker":"filled",
+            "videoSegment":{"start":0,"end":3},
+            "videoMode":"scroll"
+        },
+        {
+            "text":"Step 1",
+            "pos":30,
+            "marker":"number",
+            "videoSegment":{"start":3,"end":6},
+            "videoMode":"scroll"
+        },
+        {
+            "text":"Custom",
+            "pos":60,
+            "marker":"custom",
+            "markerContent":"★",
+            "videoSegment":{"start":6,"end":9},
+            "videoMode":"autoplay"
+        }
+    ]'>
+</scroll-video-timeline-element>
+
+<timeline-story-element
+    story-config='{
+        "scrollLength": 2000,
+        "useImage": true,
+        "image": "./images/1.jpg",
+        "parallax": {
+            "enabled": true,
+            "speed": 0.4,
+            "scale": 1.2,
+            "direction": "up"
+        },
+        "chapterMode": {
+            "enabled": true,
+            "snap": false,
+            "lerp": 0.1
+        },
+        "items": [
+            {
+                "html": "<h2>Startpunkt</h2>",
+                "start": 0.01,
+                "end": 1,
+                "marker": {
+                    "type": "filled",
+                    "label": "A",
+                    "color": "#fff",
+                    "bg": "#000"
+                },
+                "textStyle": {
+                    "color": "#fff",
+                    "size": "20px",
+                    "font": "Arial"
+                },
+                "effect": "fade-up"
+            },
+            {
+                "html": "<h2>Unterpunkt</h2>",
+                "start": 0.5,
+                "end": 1,
+                "marker": {
+                    "type": "outline",
+                    "label": "★",
+                    "color": "#fff",
+                    "bg": "transparent"
+                },
+                "textStyle": {
+                    "color": "#fff",
+                    "size": "20px",
+                    "font": "Arial"
+                },
+                "effect": "fade-up"
+            }
+        ]
+    }'
+></timeline-story-element>
+
+<div class="feature">
+    <div class="icon">✓</div>
+    <div>
+        <h3>Schnell</h3>
+        <p>Optimierte Performance</p>
+    </div>
+</div>
+
+<ul class="steps">
+    <li data-step="1">Analyse</li>
+    <li data-step="2">Konzept</li>
+    <li data-step="3">Umsetzung</li>
+</ul>
+
+<ul class="custom-list">
+    <li>Modernes Design</li>
+    <li>Responsive</li>
+</ul>
+
+<div class="card">
+    <h3>Premium Feature</h3>
+    <p>Beschreibung...</p>
+</div>
+
+<section class="feature-grid">
+    <div class="glass card">
+        <h3>Performance</h3>
+        <p>Schnelle Ladezeiten</p>
+    </div>
+    <div class="glass card">
+        <h3>Sicherheit</h3>
+        <p>Moderne Authentifizierung</p>
+    </div>
+    <div class="glass card">
+        <h3>Skalierbarkeit</h3>
+        <p>Bereit für Wachstum</p>
+    </div>
+</section>
+
+<glass-media-section
+    type="video"
+    src="./videos/demo.mp4"
+    title="Unsere Technologie"
+    text="Innovative Lösungen für moderne Webanwendungen."
+></glass-media-section>
+
+<glass-media-section
+    type="image"
+    src="./img/example.jpg"
+    title="Design trifft Funktion"
+    text="Klare Strukturen und hochwertige UI."
+    reverse
+></glass-media-section>
+
+<section class="cta glass">
+    <h2>Bereit zu starten?</h2>
+    <button>Jetzt loslegen</button>
+</section>
+
+</main>
+
+<script src="js/script.js"></script>
+</body>
+</html>

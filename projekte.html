@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekte</title>
+    <link rel="stylesheet" href="css/projekte.css">
+    <link rel="stylesheet" href="css/liquid-glass.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="/icons/favicon-96x96.png?v=20260426" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg?v=20260426" />
+    <link rel="shortcut icon" href="/icons/favicon.ico?v=20260426" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=20260426" />
+    <meta name="apple-mobile-web-app-title" content="SimLab" />
+    <link rel="manifest" href="/icons/site.webmanifest?v=20260426" />
+</head>
+<body>
+
+<script src="./js/navbar.js" type="module"></script>
+<liquid-glass-navbar></liquid-glass-navbar>
+
+<main class="projects-page">
+
+    <!-- HERO -->
+    <section class="hero glass">
+        <h1>Aktuelle Projekte</h1>
+        <p>Ein Einblick in unsere neuesten Arbeiten, Innovationen und Entwicklungen.</p>
+    </section>
+
+    <!-- SUCHLEISTE -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Projekt suchen...">
+    </div>
+
+    <!-- FILTER / KATEGORIEN (optional vorbereitet) -->
+    <section class="filters">
+        <button class="glass-button active">Alle</button>
+        <button class="glass-button">Web</button>
+        <button class="glass-button">Design</button>
+        <button class="glass-button">Software</button>
+    </section>
+
+    <!-- PROJEKTE GRID -->
+    <section class="projects-grid">
+
+        <!-- PROJEKT -->
+        <div class="project-card glass">
+            <img src="images/1.jpg" alt="">
+            <div class="project-content">
+                <h3>Projekt Alpha</h3>
+                <p>Moderne Webplattform mit Fokus auf Performance und UX.</p>
+                <div class="tags">
+                    <span>Web</span>
+                    <span>UI/UX</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card glass">
+            <img src="images/2.jpg" alt="">
+            <div class="project-content">
+                <h3>Projekt Beta</h3>
+                <p>Individuelle Softwarelösung für interne Prozessoptimierung.</p>
+                <div class="tags">
+                    <span>Software</span>
+                    <span>Automation</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card glass">
+            <img src="images/3.jpg" alt="">
+            <div class="project-content">
+                <h3>Projekt Gamma</h3>
+                <p>Branding & visuelle Identität für ein innovatives Startup.</p>
+                <div class="tags">
+                    <span>Design</span>
+                    <span>Branding</span>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- DETAIL VIEW -->
+    <div id="projectDetail" class="project-detail hidden">
+
+        <button id="backBtn" class="glass-button">← Zurück</button>
+
+        <div class="detail-content">
+            <h2 id="detailTitle"></h2>
+            <p id="detailText"></p>
+
+            <!-- GALLERY -->
+            <div class="gallery" id="gallery"></div>
+        </div>
+
+    </div>
+
+    <!-- FULLSCREEN-->
+    <div id="fullscreen" class="fullscreen hidden">
+        <img id="fullscreenImg">
+    </div>
+
+</main>
+
+<script type="module" src="js/projects.js"></script>
+</body>
+</html>

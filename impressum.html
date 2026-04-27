@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impressum</title>
+    <link rel="stylesheet" href="css/impressum.css">
+    <link rel="stylesheet" href="css/liquid-glass.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="/icons/favicon-96x96.png?v=20260426" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg?v=20260426" />
+    <link rel="shortcut icon" href="/icons/favicon.ico?v=20260426" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=20260426" />
+    <meta name="apple-mobile-web-app-title" content="SimLab" />
+    <link rel="manifest" href="/icons/site.webmanifest?v=20260426" />
+</head>
+<body>
+
+<script src="./js/navbar.js" type="module"></script>
+<liquid-glass-navbar></liquid-glass-navbar>
+
+<main>
+
+<section class="team-section">
+    <div class="team-header">
+        <h1>Unser Team</h1>
+        <p>Die Menschen hinter den Ideen.</p>
+    </div>
+
+    <div class="team-grid">
+        <div class="team-card" onclick="openMember(this)" data-email="max@firma.de" data-phone="+49 123 456789">
+            <img src="../images/1.jpg" alt="">
+            <div class="team-info">
+                <h3>Max Mustermann</h3>
+                <span>CEO & Founder</span>
+                <p>Strategie, Vision und Produktentwicklung.</p>
+            </div>
+        </div>
+
+        <div class="team-card" onclick="openMember(this)" data-email="anna@firma.de" data-phone="+49 123 456789">
+            <img src="../images/2.jpg" alt="">
+            <div class="team-info">
+                <h3>Anna Beispiel</h3>
+                <span>Design Lead</span>
+                <p>UI/UX und visuelle Markenidentität.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Overlay -->
+<!--<div class="team-overlay" id="teamOverlay">
+    <div class="overlay-content">
+        <span class="close" onclick="closeMember()">×</span>
+        <img id="overlayImg">
+        <h2 id="overlayName"></h2>
+        <h4 id="overlayRole"></h4>
+        <p id="overlayText"></p>
+    </div>
+</div>-->
+<div class="team-overlay" id="teamOverlay">
+    <div class="overlay-content" onclick="event.stopPropagation()">
+        <span class="close" onclick="closeMember()">×</span>
+
+        <img id="overlayImg">
+        <h2 id="overlayName"></h2>
+        <h4 id="overlayRole"></h4>
+        <p id="overlayText"></p>
+
+        <div class="contact-info">
+            <p><strong>Email:</strong> <span id="overlayEmail"></span></p>
+            <p><strong>Telefon:</strong> <span id="overlayPhone"></span></p>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<script src="js/impressum.js"></script>
+</body>
+</html>

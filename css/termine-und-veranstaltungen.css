@@ -1,0 +1,79 @@
+.calendar-page {
+    padding-top: 120px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.glass-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+/* GRID */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+/* DAY */
+.day {
+    min-height: 120px;
+    padding: 10px;
+    border-radius: 20px;
+
+    backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+
+    position: relative;
+}
+
+/* EVENTS */
+.event {
+    margin-top: 6px;
+    padding: 5px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* MODAL */
+.event-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 90%;
+    max-width: 500px;
+    padding: 20px;
+    z-index: 2000;
+}
+
+.hidden {
+    display: none;
+}
+
+
+
+.day.today {
+    border: 1px solid rgba(0, 150, 255, 0.6);
+    background: linear-gradient(
+        135deg,
+        rgba(0,150,255,0.15),
+        rgba(255,255,255,0.05)
+    );
+    box-shadow:
+        0 0 20px rgba(0,150,255,0.3),
+        inset 0 0 10px rgba(255,255,255,0.1);
+}

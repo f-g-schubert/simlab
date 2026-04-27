@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termine und Veranstaltungen</title>
+    <link rel="stylesheet" href="css/termine-und-veranstaltungen.css">
+    <link rel="stylesheet" href="css/liquid-glass.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="/icons/favicon-96x96.png?v=20260426" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg?v=20260426" />
+    <link rel="shortcut icon" href="/icons/favicon.ico?v=20260426" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=20260426" />
+    <meta name="apple-mobile-web-app-title" content="SimLab" />
+    <link rel="manifest" href="/icons/site.webmanifest?v=20260426" />
+</head>
+<body>
+
+<script src="./js/navbar.js" type="module"></script>
+<liquid-glass-navbar></liquid-glass-navbar>
+
+<main class="calendar-page">
+
+    <h1 class="glass-title">Termine & Veranstaltungen</h1>
+
+    <div class="calendar-controls glass">
+        <button id="prevMonth">←</button>
+        <h2 id="monthLabel"></h2>
+        <button id="nextMonth">→</button>
+    </div>
+
+    <div id="calendar" class="calendar-grid"></div>
+
+    <!-- Detail View -->
+    <div id="eventModal" class="event-modal glass hidden"></div>
+
+</main>
+
+<script type="module" src="js/termine-und-veranstaltungen.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================
+   DESIGN SYSTEM
+========================= */
+:root {
+    --bg: #f5f7fa;
+    --text: #111;
+    --primary: #4f46e5;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f172a;
+        --text: #f1f5f9;
+    }
+}
+
+body {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  font-family: system-ui;
+  margin: 0;
+  color: white;
+}
+
+/* =========================
+   GLASS BUTTONS
+========================= */
+main button {
+  color: white;
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.08);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  padding: 10px;
+  margin: 10px;
+}
+
+.glass-button {
+  color: white;
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.08);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  padding: 10px;
+  margin: 10px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+main button:hover,
+.glass-button:hover {
+  transform: scale(1.05);
+}
+
+/* =========================
+   LIQUID GLASS SECTIONS
+========================= */
+.section {
+    margin: 60px auto;
+    padding: 40px;
+    max-width: 900px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.hero {
+    margin: 120px auto 40px;
+    padding: 60px;
+    text-align: center;
+    max-width: 900px;
+}
+
+/* CONTENT */
+.content {
+    display: flex;
+    gap: 30px;
+    padding: 40px;
+    justify-content: center;
+}
+
+.card {
+    padding: 30px;
+    max-width: 400px;
+}
+
+/* VALUES */
+.values {
+    padding: 60px 40px;
+    text-align: center;
+}
+
+.value-grid {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    justify-content: center;
+}
+
+.value-card {
+    padding: 25px;
+    width: 250px;
+}
