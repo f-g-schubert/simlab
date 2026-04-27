@@ -5,10 +5,10 @@ const DB = {
         {
             id: 1,
             author: "SimLab",
-            avatar: "../images/logo.png",
+            avatar: "/images/logo.png",
             date: "2026-04-24",
             content: "Sehr langer Text ...",
-            images: ["../images/1.jpg"],
+            images: ["/images/1.jpg"],
             likes: 10,
             liked: false,
             comments: []
@@ -23,12 +23,12 @@ const DB = {
             fullText: "Hier steht die komplette Projektbeschreibung...",
             category: "web",
             status: "in arbeit",
-            cover: "../images/1.jpg",
+            cover: "/images/1.jpg",
 
             gallery: [
-                "../images/1.jpg",
-                "../images/2.jpg",
-                "../images/3.jpg"
+                "/images/1.jpg",
+                "/images/2.jpg",
+                "/images/3.jpg"
             ],
 
             tags: ["Web", "UI/UX"],
@@ -42,11 +42,11 @@ const DB = {
             fullText: "Detaillierte Beschreibung vom Projekt Beta...",
             category: "software",
             status: "abgeschlossen",
-            cover: "../images/2.jpg",
+            cover: "/images/2.jpg",
 
             gallery: [
-                "../images/2.jpg",
-                "../images/3.jpg"
+                "/images/2.jpg",
+                "/images/3.jpg"
             ],
 
             tags: ["Automation"],
@@ -60,11 +60,11 @@ const DB = {
             fullText: "Detaillierte Beschreibung vom Projekt Gamma...",
             category: "mobile",
             status: "konzept",
-            cover: "../images/2.jpg",
+            cover: "/images/2.jpg",
 
             gallery: [
-                "../images/2.jpg",
-                "../images/3.jpg"
+                "/images/2.jpg",
+                "/images/3.jpg"
             ],
 
             tags: ["Automation"],

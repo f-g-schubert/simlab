@@ -100,6 +100,20 @@ main button:hover,
 .card {
     padding: 30px;
     max-width: 400px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        max-width: 100%;
+        width: 100%;
+    }
 }
 
 /* VALUES */

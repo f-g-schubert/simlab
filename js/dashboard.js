@@ -55,7 +55,7 @@ function renderBlog() {
 
     container.innerHTML = posts.map(post => `
         <div class="preview-item">
-            <img src="/${post.images[0]}" class="preview-img">
+            <img src="${post.images[0]}" class="preview-img">
 
             <div class="preview-text">
                 <strong>${post.author}</strong>
@@ -75,7 +75,7 @@ function renderProjects() {
 
     container.innerHTML = projects.map(project => `
         <div class="preview-item">
-            <img src="/${project.cover}" class="preview-img">
+            <img src="${project.cover}" class="preview-img">
 
             <div class="preview-text">
                 <strong>${project.title}</strong>
