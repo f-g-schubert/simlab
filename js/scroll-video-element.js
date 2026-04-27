@@ -4,8 +4,10 @@ class ScrollVideoElement extends HTMLElement {
         this.attachShadow({ mode: "open" });
 
         this._onScroll = this._onScroll.bind(this);
+        this._onRAF = this._onRAF.bind(this);
         this._observer = null;
         this._visible = false;
+        this._rafId = null;
     }
 
     static get observedAttributes() {
@@ -23,6 +25,7 @@ class ScrollVideoElement extends HTMLElement {
 
     disconnectedCallback() {
         window.removeEventListener("scroll", this._onScroll);
+        if (this._rafId) cancelAnimationFrame(this._rafId);
         if (this._observer) this._observer.disconnect();
     }
 
@@ -35,7 +38,9 @@ class ScrollVideoElement extends HTMLElement {
 
         this.shadowRoot.innerHTML = `
             <section class="videoScroll">
-                <video class="video" src="${videoSrc}" muted playsinline></video>
+                <video class="video" muted playsinline preload="metadata" crossorigin="anonymous">
+                    <source src="${videoSrc}" type="video/mp4">
+                </video>
                 <div class="overlay">
                     <div class="overlay-inner"></div>
                 </div>
@@ -53,6 +58,18 @@ class ScrollVideoElement extends HTMLElement {
                     width: 100%;
                     height: 100vh;
                     object-fit: cover;
+                    display: block;
+                    -webkit-transform: translateZ(0);
+                    transform: translateZ(0);
+                    -webkit-backface-visibility: hidden;
+                    backface-visibility: hidden;
+                    -webkit-user-select: none;
+                    user-select: none;
+                    background: #000;
+                    -webkit-appearance: none;
+                    -webkit-touch-callout: none;
+                    max-width: 100%;
+                    will-change: auto;
                 }
 
                 .overlay {
@@ -122,8 +139,10 @@ class ScrollVideoElement extends HTMLElement {
 
                 if (this._visible) {
                     window.addEventListener("scroll", this._onScroll, { passive: true });
+                    this._startRAF();
                 } else {
                     window.removeEventListener("scroll", this._onScroll);
+                    this._stopRAF();
                 }
             });
         }, {
@@ -133,10 +152,35 @@ class ScrollVideoElement extends HTMLElement {
         this._observer.observe(this);
     }
 
+    _startRAF() {
+        if (this._rafId) return;
+        this._rafId = requestAnimationFrame(this._onRAF);
+    }
+
+    _stopRAF() {
+        if (this._rafId) {
+            cancelAnimationFrame(this._rafId);
+            this._rafId = null;
+        }
+    }
+
+    _onRAF() {
+        if (this._visible) {
+            this._updateVideo();
+            this._rafId = requestAnimationFrame(this._onRAF);
+        }
+    }
+
     // =========================
     // SCROLL LOGIC (LOCAL + SAFE)
     // =========================
     _onScroll() {
+        if (this._visible) {
+            this._updateVideo();
+        }
+    }
+
+    _updateVideo() {
         const section = this.shadowRoot.querySelector(".videoScroll");
         if (!section || !this.video) return;
 
@@ -148,9 +192,15 @@ class ScrollVideoElement extends HTMLElement {
             1
         );
 
-        // Video sync
-        if (this.video.duration) {
-            this.video.currentTime = this.video.duration * progress;
+        // Video sync mit fehlertoleranz für iOS
+        if (this.video.duration && !isNaN(this.video.duration)) {
+            const targetTime = this.video.duration * progress;
+            const currentTime = this.video.currentTime || 0;
+            
+            // Nur aktualisieren, wenn die Differenz signifikant ist
+            if (Math.abs(targetTime - currentTime) > 0.1) {
+                this.video.currentTime = targetTime;
+            }
         }
 
         // Overlay sync

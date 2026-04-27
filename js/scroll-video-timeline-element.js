@@ -61,7 +61,9 @@ class ScrollVideoTimelineElement extends HTMLElement {
     renderBase() {
         this.shadowRoot.innerHTML = `
             <section id="timelineScroll">
-                <video id="video" muted playsinline preload="auto"></video>
+                <video id="video" muted playsinline preload="metadata" crossorigin="anonymous">
+                    <source src="${this._videoSrc}" type="video/mp4">
+                </video>
                 <div class="timeline"></div>
             </section>
 
@@ -82,6 +84,18 @@ class ScrollVideoTimelineElement extends HTMLElement {
                     width: 100%;
                     height: 100vh;
                     object-fit: cover;
+                    display: block;
+                    -webkit-transform: translateZ(0);
+                    transform: translateZ(0);
+                    -webkit-backface-visibility: hidden;
+                    backface-visibility: hidden;
+                    -webkit-user-select: none;
+                    user-select: none;
+                    background: #000;
+                    -webkit-appearance: none;
+                    -webkit-touch-callout: none;
+                    max-width: 100%;
+                    will-change: auto;
                 }
 
                 .timeline {

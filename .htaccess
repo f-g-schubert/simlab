@@ -1,0 +1,26 @@
+# Video MIME Types
+<IfModule mod_mime.c>
+    AddType video/mp4 .mp4
+    AddType video/webm .webm
+    AddType video/ogg .ogv
+    AddType video/quicktime .mov
+</IfModule>
+
+# Gzip Compression für Videos (optional, aber hilft bei Performance)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+# Cache Control für Videos (längere Caching-Zeit)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType video/mp4 "access plus 30 days"
+    ExpiresByType video/webm "access plus 30 days"
+    ExpiresByType video/ogg "access plus 30 days"
+    ExpiresByType video/quicktime "access plus 30 days"
+</IfModule>
+
+# CORS Headers für Video-Zugriff
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>

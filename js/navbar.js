@@ -460,7 +460,7 @@ class NavBar extends HTMLElement {
 
         this.shadowRoot.addEventListener("click", (e) => {
             if (e.target.id === "navLogin") {
-                window.location.href = "/auth-service.html";
+                window.location.href = "./auth-service.html";
             }
 
             if (e.target.id === "navLogout") {
@@ -468,7 +468,7 @@ class NavBar extends HTMLElement {
             }
 
             if (e.target.id === "navDashboard") {
-                window.location.href = "/admin-dashboard.html";
+                window.location.href = "./admin-dashboard.html";
             }
         });
 
