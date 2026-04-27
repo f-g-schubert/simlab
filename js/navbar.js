@@ -14,7 +14,7 @@ class NavBar extends HTMLElement {
                 <div class="nav-left">
                     <div id="burger">☰</div>
 
-                    <div id="brand" class="brand" onclick="window.location.href = '/';">
+                    <div id="brand" class="brand" onclick="window.location.href = './';">
                         <img src="images/logo.png" class="logo">
                         <span class="title">Meine Seite</span>
                     </div>
