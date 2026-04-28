@@ -9,8 +9,13 @@ class ScrollVideoTimelineElement extends HTMLElement {
 
         this._active = false;
         this._raf = null;
+        this._rafId = null;
 
         this._lastIndex = -1;
+        
+        // Bind methods for event listeners
+        this._onScroll = this._onScroll.bind(this);
+        this._onRAF = this._onRAF.bind(this);
     }
 
     static get observedAttributes() {
@@ -30,7 +35,10 @@ class ScrollVideoTimelineElement extends HTMLElement {
 
         if (name === "video-src") {
             this._videoSrc = newValue;
-            if (this.video) this.video.src = newValue;
+            if (this.video) {
+                this.video.src = newValue;
+                this.video.load();
+            }
         }
     }
 
@@ -52,6 +60,7 @@ class ScrollVideoTimelineElement extends HTMLElement {
 
     disconnectedCallback() {
         this.stopLoop();
+        window.removeEventListener("scroll", this._onScroll);
         if (this._observer) this._observer.disconnect();
     }
 
@@ -61,7 +70,9 @@ class ScrollVideoTimelineElement extends HTMLElement {
     renderBase() {
         this.shadowRoot.innerHTML = `
             <section id="timelineScroll">
-                <video id="video" muted playsinline preload="auto"></video>
+                <video id="video" muted playsinline preload="metadata">
+                    <source src="${this._videoSrc}" type="video/mp4">
+                </video>
                 <div class="timeline"></div>
             </section>
 
@@ -89,6 +100,11 @@ class ScrollVideoTimelineElement extends HTMLElement {
                     backface-visibility: hidden;
                     -webkit-user-select: none;
                     user-select: none;
+                    background: #000;
+                    -webkit-appearance: none;
+                    -webkit-touch-callout: none;
+                    max-width: 100%;
+                    will-change: auto;
                 }
 
                 .timeline {
@@ -156,7 +172,8 @@ class ScrollVideoTimelineElement extends HTMLElement {
         this.video = this.shadowRoot.getElementById("video");
 
         if (this._videoSrc) {
-            this.video.src = this._videoSrc;
+            // If source was already set before render, ensure video is loaded.
+            this.video.load();
         }
     }
 
@@ -201,41 +218,50 @@ class ScrollVideoTimelineElement extends HTMLElement {
             entries.forEach(entry => {
                 this._active = entry.isIntersecting;
 
-                if (this._active) this.startLoop();
-                else this.stopLoop();
+                if (this._active) {
+                    window.addEventListener("scroll", this._onScroll, { passive: true });
+                    this.startLoop();
+                } else {
+                    window.removeEventListener("scroll", this._onScroll);
+                    this.stopLoop();
+                }
             });
+        }, {
+            threshold: 0.1
         });
 
-        this._observer.observe(this.section);
+        this._observer.observe(this);
     }
 
     // =========================
     // LOOP
     // =========================
     startLoop() {
-        if (this._raf) return;
-
-        const loop = () => {
-            if (!this._active) return;
-
-            this.update();
-            this._raf = requestAnimationFrame(loop);
-        };
-
-        loop();
+        if (this._rafId) return;
+        this._rafId = requestAnimationFrame(this._onRAF);
     }
 
     stopLoop() {
-        cancelAnimationFrame(this._raf);
-        this._raf = null;
+        if (this._rafId) {
+            cancelAnimationFrame(this._rafId);
+            this._rafId = null;
+        }
     }
 
-    // =========================
-    // CORE LOGIC
-    // =========================
-    update() {
-        if (!this.video || !this.section) return;
+    _onScroll() {
+        if (this._active) {
+            this._updateVideo();
+        }
+    }
 
+    _onRAF() {
+        if (this._active) {
+            this._updateVideo();
+            this._rafId = requestAnimationFrame(this._onRAF);
+        }
+    }
+
+    _updateVideo() {
         const rect = this.section.getBoundingClientRect();
         const vh = window.innerHeight;
         const total = rect.height - vh;
@@ -247,71 +273,25 @@ class ScrollVideoTimelineElement extends HTMLElement {
 
         this.timeline.style.setProperty("--progress", progress);
 
-        // =========================
-        // 🔥 BASELINE VIDEO (IMMER FUNKTIONIERT)
-        // =========================
-        const duration = this.video.duration;
-
-        if (duration && this.video.readyState >= 2) {
-            const baseTarget = duration * progress;
-            this.video.currentTime += (baseTarget - this.video.currentTime) * 0.15;
+        if (this.video.duration && !isNaN(this.video.duration)) {
+            const targetTime = this.video.duration * progress;
+            const currentTime = this.video.currentTime || 0;
+            if (Math.abs(targetTime - currentTime) > 0.1) {
+                this.video.currentTime = targetTime;
+            }
         }
 
-        // =========================
-        // ITEM LOGIC (SAFE LAYER)
-        // =========================
         const items = this._items || [];
+        const itemCount = items.length;
+        let activeIndex = 0;
 
-        if (!items.length) return;
-
-        const segmentSize = 1 / items.length;
-
-        const index = Math.min(
-            Math.floor(progress / segmentSize),
-            items.length - 1
-        );
-
-        const current = items[index];
-        const start = index * segmentSize;
-        const local = (progress - start) / segmentSize;
-
-        const mode = this.getAttribute("mode") || "scroll";
-
-        // =========================
-        // SEGMENT LAYER (OPTIONAL)
-        // =========================
-        if (mode === "segments" && current?.videoSegment) {
-
-            const { start: s, end: e } = current.videoSegment;
-
-            const itemMode = current.videoMode || "scroll";
-
-            if (itemMode === "scroll") {
-                const target = s + (e - s) * local;
-
-                this.video.currentTime += (target - this.video.currentTime) * 0.15;
-            }
-
-            if (itemMode === "autoplay") {
-
-                if (this._lastIndex !== index) {
-                    this.video.currentTime = s;
-                    this.video.play().catch(() => {});
-                }
-
-                if (this.video.currentTime >= e) {
-                    this.video.pause();
-                }
-            }
-
-            this._lastIndex = index;
+        if (itemCount > 0) {
+            const segmentSize = 1 / itemCount;
+            activeIndex = Math.min(Math.floor(progress / segmentSize), itemCount - 1);
         }
 
-        // =========================
-        // UI UPDATE (IMMER AUSFÜHREN!)
-        // =========================
         this.shadowRoot.querySelectorAll(".timeline-item").forEach((el, i) => {
-            el.classList.toggle("active", i === index);
+            el.classList.toggle("active", i === activeIndex);
         });
     }
 }
