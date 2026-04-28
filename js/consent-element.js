@@ -85,7 +85,7 @@ class CookieConsent extends HTMLElement {
             <div class="text">
                 Diese Website verwendet lokale Speicherung (localStorage), um Login-Funktionen bereitzustellen.
                 Weitere Informationen findest du in der 
-                <a href="/datenschutz.html">Datenschutzerklärung</a>.
+                <a href="datenschutz.html">Datenschutzerklärung</a>.
             </div>
             <button class="accept">OK</button>
         </div>

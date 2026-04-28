@@ -36,7 +36,7 @@ class GlassFooter extends HTMLElement {
 
         this.shadowRoot.innerHTML = `
         <style>
-            :host { display:block; color:white; }
+            :host { display:block; color:white; margin-top:10px; padding-top:10px; }
 
             .footer {
                 position:relative;
@@ -45,6 +45,8 @@ class GlassFooter extends HTMLElement {
                 background: rgba(255,255,255,0.05);
                 border-radius:30px 30px 0 0;
                 overflow:hidden;
+
+                isolation: isolate;
             }
 
             .footer::before {
@@ -56,6 +58,9 @@ class GlassFooter extends HTMLElement {
                 background: linear-gradient(120deg, ${c1}, ${c2}, ${c1});
                 background-size:200% 200%;
                 animation:move 6s linear infinite;
+
+                pointer-events: none;
+                z-index:0;
 
                 -webkit-mask:
                   linear-gradient(#000 0 0) content-box,
@@ -74,6 +79,8 @@ class GlassFooter extends HTMLElement {
                 gap:40px;
                 max-width:1200px;
                 margin:auto;
+                position:relative;
+                z-index:2;
             }
 
             .col a {
@@ -134,6 +141,7 @@ class GlassFooter extends HTMLElement {
                 background:linear-gradient(120deg, transparent, ${c1}, transparent);
                 opacity:0;
                 transition:.4s;
+                pointer-events: none;
             }
 
             .icon:hover::after {
@@ -145,11 +153,18 @@ class GlassFooter extends HTMLElement {
                 text-align:center;
                 opacity:.5;
                 font-size:14px;
+                position:relative;
+                z-index:2;
             }
 
             @media (max-width:800px) {
                 .container { grid-template-columns:1fr; text-align:center; }
                 .socials { justify-content:center; }
+            }
+
+            .glow {
+                pointer-events: none;
+                z-index: 0;
             }
         </style>
 
@@ -177,7 +192,7 @@ class GlassFooter extends HTMLElement {
             </div>
 
             <div class="bottom">
-                © ${year} ${brand}
+                <!--© ${year} ${brand}-->
             </div>
         </footer>
         `;
