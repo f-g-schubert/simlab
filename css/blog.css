@@ -91,3 +91,23 @@
   width: 80%;
   border-radius: 12px;
 }
+
+@media (max-width: 768px) {
+  #feedView, #detailView {
+    margin: 20px 10px;
+    max-width: none;
+  }
+
+  .post, .post-detail {
+    margin: 5px;
+    padding: 5px;
+  }
+
+  .post-header, .post-content, .post-actions {
+    padding: 8px;
+  }
+
+  .image-gallery img {
+    width: 100%;
+  }
+}

@@ -93,8 +93,31 @@
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+    .projects-page {
+        padding-top: 80px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
     .hero h1 {
         font-size: 30px;
+    }
+
+    .hero {
+        margin-bottom: 30px;
+    }
+
+    .filters {
+        gap: 10px;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .project-content {
+        padding: 15px;
     }
 }
 

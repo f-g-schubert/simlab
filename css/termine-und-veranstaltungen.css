@@ -64,6 +64,32 @@
     display: none;
 }
 
+@media (max-width: 768px) {
+    .calendar-page {
+        padding-top: 80px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .calendar-controls {
+        padding: 10px;
+    }
+
+    .calendar-grid {
+        gap: 5px;
+    }
+
+    .day {
+        min-height: 80px;
+        padding: 5px;
+    }
+
+    .event {
+        font-size: 10px;
+        padding: 3px 5px;
+    }
+}
+
 
 
 .day.today {

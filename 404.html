@@ -107,6 +107,7 @@ body {
     font-size: 120px;
     font-weight: 800;
     background: linear-gradient(90deg, cyan, magenta);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 10px;
@@ -149,6 +150,31 @@ p {
 .btn.primary {
     background: linear-gradient(135deg, cyan, magenta);
     border: none;
+}
+
+@media (max-width: 768px) {
+    .glass-card {
+        padding: 40px 20px;
+        max-width: 90%;
+    }
+
+    .error-code {
+        font-size: 80px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 10px;
+    }
 }
 </style>
 

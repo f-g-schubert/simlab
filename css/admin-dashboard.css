@@ -12,3 +12,20 @@
 .content {
     padding: 20px;
 }
+
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        padding: 80px 10px;
+    }
+
+    .sidebar {
+        order: 2;
+        padding: 10px;
+    }
+
+    .content {
+        order: 1;
+        padding: 10px;
+    }
+}

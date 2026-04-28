@@ -134,3 +134,27 @@
 .contact-info p {
     margin: 5px 0;
 }
+
+@media (max-width: 768px) {
+    .team-section {
+        padding: 50px 5%;
+    }
+
+    .team-header h1 {
+        font-size: 36px;
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .overlay-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .overlay-content img {
+        width: 80px;
+    }
+}
