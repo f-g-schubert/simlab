@@ -1,4 +1,4 @@
-// blog.js
+// blog.js - Blogging with Supabase
 import { getBlog, getBlogById, likeBlogPost } from "./supabase.js";
 
 const feedView = document.getElementById("feedView");
@@ -32,7 +32,6 @@ function createPostCard(post) {
   const el = document.createElement("div");
   el.className = "post";
 
-  // Handle images - content.images might be an array or undefined
   const firstImage = post.images && post.images[0] ? post.images[0] : '';
 
   el.innerHTML = `
@@ -52,7 +51,6 @@ function createPostCard(post) {
     </div>
   `;
 
-  // Click to open detail
   el.addEventListener("click", () => {
     switchView("detail", post.id);
   });

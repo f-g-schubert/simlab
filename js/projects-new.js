@@ -7,6 +7,7 @@ const detail = document.getElementById("projectDetail");
 const title = document.getElementById("detailTitle");
 const text = document.getElementById("detailText");
 const gallery = document.getElementById("gallery");
+const detail = document.getElementById("projectDetail");
 const fs = document.getElementById("fullscreen");
 const fsImg = document.getElementById("fullscreenImg");
 const searchInput = document.getElementById("searchInput");

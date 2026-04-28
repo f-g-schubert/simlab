@@ -1,4 +1,4 @@
-import { getDB_DataSet } from "./db.js";
+import { getBlog, getProjects, getEvents } from "./supabase.js";
 // import { initRealtime } from "./realtime.js"; // ⬅️ (REALTIME AKTIVIEREN)
 
 let DB = null;
@@ -10,7 +10,13 @@ initDashboard();
 ========================= */
 async function initDashboard() {
     try {
-        DB = await getDB_DataSet();
+        const [blog, projects, events] = await Promise.all([
+            getBlog(),
+            getProjects(),
+            getEvents()
+        ]);
+
+        DB = { blog, projects, events };
 
         renderEvents();
         renderBlog();
@@ -23,7 +29,13 @@ async function initDashboard() {
         /*
         // ❗ ENTKOMMENTIEREN FÜR REALTIME:
         initRealtime(async () => {
-            DB = await getDB_DataSet();
+            const [blog, projects, events] = await Promise.all([
+                getBlog(),
+                getProjects(),
+                getEvents()
+            ]);
+
+            DB = { blog, projects, events };
 
             renderEvents();
             renderBlog();
