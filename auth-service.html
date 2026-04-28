@@ -215,13 +215,25 @@ p {
 <script type="module">
     import { AuthService } from './js/auth-service.js';
 
-    document.getElementById("loginBtn").addEventListener("click", async () => {
+    /*document.getElementById("loginBtn").addEventListener("click", async () => {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
 
         await AuthService.login(username, password);
 
         window.location.href = "/admin-dashboard.html";
+    });*/
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+        const email = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            await AuthService.login(email, password);
+            window.location.href = "/admin-dashboard.html";
+        } catch (e) {
+            alert("Login fehlgeschlagen");
+        }
     });
 </script>
 

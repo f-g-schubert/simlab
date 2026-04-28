@@ -1,15 +1,44 @@
 import { getDB_DataSet } from "./db.js";
+// import { initRealtime } from "./realtime.js"; // ⬅️ (REALTIME AKTIVIEREN)
 
-const DB = getDB_DataSet();
+let DB = null;
 
 initDashboard();
 
-function initDashboard() {
-    renderEvents();
-    renderBlog();
-    renderProjects();
+/* =========================
+    INIT
+========================= */
+async function initDashboard() {
+    try {
+        DB = await getDB_DataSet();
+
+        renderEvents();
+        renderBlog();
+        renderProjects();
+
+        /* =========================
+            REALTIME AKTIVIEREN
+        ========================= */
+
+        /*
+        // ❗ ENTKOMMENTIEREN FÜR REALTIME:
+        initRealtime(async () => {
+            DB = await getDB_DataSet();
+
+            renderEvents();
+            renderBlog();
+            renderProjects();
+        });
+        */
+
+    } catch (e) {
+        console.error("Dashboard Fehler:", e);
+    }
 }
 
+/* =========================
+    HELPERS
+========================= */
 function getTimeLabel(dateString) {
     const now = new Date();
     const eventDate = new Date(dateString);
@@ -26,8 +55,23 @@ function getTimeLabel(dateString) {
     return `In ${weeks} Woche${weeks > 1 ? "n" : ""}`;
 }
 
+function truncate(text, length) {
+    if (!text) return "";
+    return text.length > length ? text.substring(0, length) + "..." : text;
+}
+
+function formatDate(date) {
+    return new Date(date).toLocaleDateString();
+}
+
+/* =========================
+    RENDER EVENTS
+========================= */
 function renderEvents() {
+    if (!DB?.events) return;
+
     const container = document.querySelector("#eventsPreview .card-content");
+    if (!container) return;
 
     const events = [...DB.events]
         .sort((a, b) => new Date(a.start) - new Date(b.start))
@@ -46,8 +90,14 @@ function renderEvents() {
     `).join("");
 }
 
+/* =========================
+    RENDER BLOG
+========================= */
 function renderBlog() {
+    if (!DB?.blog) return;
+
     const container = document.querySelector("#blogPreview .card-content");
+    if (!container) return;
 
     const posts = [...DB.blog]
         .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -55,7 +105,7 @@ function renderBlog() {
 
     container.innerHTML = posts.map(post => `
         <div class="preview-item">
-            <img src="${post.images[0]}" class="preview-img">
+            <img src="${post.images?.[0] || ''}" class="preview-img">
 
             <div class="preview-text">
                 <strong>${post.author}</strong>
@@ -66,8 +116,14 @@ function renderBlog() {
     `).join("");
 }
 
+/* =========================
+    RENDER PROJECTS
+========================= */
 function renderProjects() {
+    if (!DB?.projects) return;
+
     const container = document.querySelector("#projectsPreview .card-content");
+    if (!container) return;
 
     const projects = [...DB.projects]
         .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -84,12 +140,4 @@ function renderProjects() {
             </div>
         </div>
     `).join("");
-}
-
-function truncate(text, length) {
-    return text.length > length ? text.substring(0, length) + "..." : text;
-}
-
-function formatDate(date) {
-    return new Date(date).toLocaleDateString();
 }

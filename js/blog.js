@@ -1,5 +1,5 @@
 // blog.js
-import { getDB_dataFor, getDB_DataSet } from "./db.js";
+import { getDB_dataFor, likePost, addComment } from "./db.js";
 
 /*const feed = document.getElementById("feed");
 
@@ -97,17 +97,17 @@ function createPostCard(post) {
   return el;
 }
 
-function renderFeed() {
+async function renderFeed() {
   feedView.innerHTML = "";
-  const posts = getDB_dataFor("blog");
+  const posts = await getDB_dataFor("blog");
 
   posts.forEach(post => {
     feedView.appendChild(createPostCard(post));
   });
 }
 
-function renderDetail(postId) {
-  const posts = getDB_dataFor("blog");
+async function renderDetail(postId) {
+  const posts = await getDB_dataFor("blog");
   const post = posts.find(p => p.id === postId);
 
   detailView.innerHTML = `
@@ -129,23 +129,44 @@ function renderDetail(postId) {
       </div>
 
       <div class="post-actions">
-        ❤️ ${post.likes}
+        <span id="likeBtn">❤️ ${post.likes}</span>
       </div>
 
       <div class="comments">
         <h3>Kommentare</h3>
-        ${post.comments.map(c => `
-          <div class="comment">
-            <strong>${c.user}</strong>: ${c.text}
-          </div>
-        `).join("")}
-      </div>
 
+        <div id="commentList">
+          ${post.comments.map(c => `
+            <div class="comment">
+              <strong>${c.user_name}</strong>: ${c.text}
+            </div>
+          `).join("")}
+        </div>
+
+        <input id="commentInput" placeholder="Kommentar..." />
+        <button id="commentBtn">Senden</button>
+
+      </div>
     </div>
   `;
 
   document.getElementById("backBtn")
     .addEventListener("click", () => switchView("feed"));
+
+  document.getElementById("likeBtn")
+    .addEventListener("click", async () => {
+      await likePost(postId);
+      renderDetail(postId);
+    });
+
+  document.getElementById("commentBtn")
+    .addEventListener("click", async () => {
+      const text = document.getElementById("commentInput").value;
+      if (!text) return;
+
+      await addComment(postId, text);
+      renderDetail(postId);
+    });
 }
 
 // MARK: - Vorbereitung
@@ -174,6 +195,15 @@ function addComment(postId, text) {
   });
 
   renderDetail(postId);
+}
+
+function getGuestId() {
+  let id = localStorage.getItem("guest_id");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("guest_id", id);
+  }
+  return id;
 }
 
 renderFeed();
