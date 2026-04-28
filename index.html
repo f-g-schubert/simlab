@@ -15,16 +15,19 @@
 </head>
 <body>
 
-<script src="./js/navbar.js" type="module"></script>
-<liquid-glass-navbar></liquid-glass-navbar>
-
-<main>
     <script src="./js/carousel-element.js"></script>
     <script src="./js/reveal-container-element.js"></script>
     <script src="./js/scroll-video-element.js"></script>
     <script src="./js/scroll-video-timeline-element.js"></script>
     <script src="./js/timeline-story-element.js"></script>
     <script src="./js/glass-media-section.js"></script>
+    <script src="./js/footer.js"></script>
+    <script src="./js/consent-element.js"></script>
+
+<script src="./js/navbar.js" type="module"></script>
+<liquid-glass-navbar></liquid-glass-navbar>
+
+<main>
 
 <carousel-element
     images='["./images/1.jpg","./images/2.jpg","./images/3.jpg"]'
@@ -238,6 +241,36 @@
 </section>
 
 </main>
+
+<cookie-consent
+    position="bottom"
+    theme="glass"
+    storage-key="consentGiven"
+></cookie-consent>
+
+<glass-footer
+    brand="SimLab"
+    description="Students for Surgery"
+    theme="gold"
+    links='[
+        {"title":"Navigation","items":[
+            {"label":"Start","href":"./"},
+            {"label":"Login","href":"login.html"},
+            {"label":"Dashboard","href":"dashboard.html"},
+            {"label":"Blog","href":"blog.html"},
+            {"label":"Termine","href":"termine-und-veranstaltungen.html"},
+            {"label":"Projekte","href":"projekte.html"}
+        ]},
+        {"title":"Legal","items":[
+            {"label":"Impressum","href":"impressum.html"},
+            {"label":"Datenschutz","href":"datenschutz.html"},
+            {"label":"Über uns","href":"ueber-uns.html"}
+        ]}
+    ]'
+    socials='[
+        {"type":"instagram","href":"#"}
+    ]'
+></glass-footer>
 
 <script src="js/script.js"></script>
 </body>

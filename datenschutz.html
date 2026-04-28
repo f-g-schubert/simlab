@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutzerklärung</title>
+    <link rel="icon" type="image/png" href="/icons/favicon-96x96.png?v=20260426" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg?v=20260426" />
+    <link rel="shortcut icon" href="/icons/favicon.ico?v=20260426" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=20260426" />
+    <meta name="apple-mobile-web-app-title" content="SimLab" />
+    <link rel="manifest" href="/icons/site.webmanifest?v=20260426" />
+
+<style>
+body {
+    font-family: system-ui, sans-serif;
+    background: #0f1115;
+    color: #eaeaea;
+    margin: 0;
+    padding: 40px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    backdrop-filter: blur(18px);
+    background: rgba(255,255,255,0.03);
+    padding: 40px;
+    border-radius: 20px;
+}
+
+h1, h2 {
+    color: white;
+}
+
+p {
+    line-height: 1.6;
+    opacity: 0.9;
+}
+</style>
+</head>
+
+<body>
+
+    <script src="./js/footer.js"></script>
+    <script src="./js/consent-element.js"></script>
+
+    <script src="./js/navbar.js" type="module"></script>
+    <liquid-glass-navbar></liquid-glass-navbar>
+
+<main>
+
+<div class="container">
+    <h1>Datenschutzerklärung</h1>
+
+    <h2>1. Allgemeines</h2>
+    <p>
+        Der Schutz Ihrer persönlichen Daten ist uns wichtig. Diese Website verarbeitet personenbezogene Daten
+        ausschließlich im Rahmen der gesetzlichen Vorschriften (DSGVO).
+    </p>
+
+    <h2>2. Zugriffsdaten</h2>
+    <p>
+        Beim Besuch dieser Website werden automatisch Informationen durch den Webserver erfasst
+        (z. B. IP-Adresse, Zeitpunkt des Zugriffs, Browsertyp).
+        Diese Daten dienen ausschließlich der technischen Bereitstellung und Sicherheit.
+    </p>
+
+    <h2>3. Verwendung von localStorage</h2>
+    <p>
+        Diese Website verwendet den lokalen Speicher Ihres Browsers (localStorage), um Login-Informationen
+        (Authentifizierungs-Token) zu speichern.
+    </p>
+    <p>
+        Diese Speicherung ist technisch erforderlich, um eingeloggte Bereiche der Website bereitzustellen.
+    </p>
+
+    <h2>4. Zweck der Verarbeitung</h2>
+    <p>
+        Die Speicherung erfolgt ausschließlich zur Authentifizierung und Verwaltung von Benutzer-Sitzungen.
+    </p>
+
+    <h2>5. Rechtsgrundlage</h2>
+    <p>
+        Die Verarbeitung erfolgt gemäß Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung bzw. Bereitstellung
+        der angeforderten Dienste).
+    </p>
+
+    <h2>6. Speicherdauer</h2>
+    <p>
+        Die Daten bleiben im localStorage gespeichert, bis Sie sich ausloggen oder den Speicher Ihres Browsers löschen.
+    </p>
+
+    <h2>7. Weitergabe von Daten</h2>
+    <p>
+        Es erfolgt keine Weitergabe der Daten an Dritte.
+    </p>
+
+    <h2>8. Ihre Rechte</h2>
+    <p>
+        Sie haben das Recht auf Auskunft, Berichtigung, Löschung sowie Einschränkung der Verarbeitung Ihrer Daten.
+    </p>
+
+    <h2>9. Kontakt</h2>
+    <p>
+        Bei Fragen zum Datenschutz wenden Sie sich bitte an den Betreiber dieser Website.
+    </p>
+</div>
+
+</main>
+
+<cookie-consent
+    position="bottom"
+    theme="glass"
+    storage-key="consentGiven"
+></cookie-consent>
+
+<glass-footer
+    brand="SimLab"
+    description="Students for Surgery"
+    theme="gold"
+    links='[
+        {"title":"Navigation","items":[
+            {"label":"Start","href":"./"},
+            {"label":"Login","href":"login.html"},
+            {"label":"Dashboard","href":"dashboard.html"},
+            {"label":"Blog","href":"blog.html"},
+            {"label":"Termine","href":"termine-und-veranstaltungen.html"},
+            {"label":"Projekte","href":"projekte.html"}
+        ]},
+        {"title":"Legal","items":[
+            {"label":"Impressum","href":"impressum.html"},
+            {"label":"Datenschutz","href":"datenschutz.html"},
+            {"label":"Über uns","href":"ueber-uns.html"}
+        ]}
+    ]'
+    socials='[
+        {"type":"instagram","href":"#"}
+    ]'
+></glass-footer>
+
+</body>
+</html>

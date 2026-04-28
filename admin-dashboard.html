@@ -17,6 +17,9 @@
 </head>
 <body>
 
+    <script src="./js/footer.js"></script>
+    <script src="./js/consent-element.js"></script>
+
 <script src="./js/navbar.js" type="module"></script>
 <liquid-glass-navbar></liquid-glass-navbar>
 
@@ -35,6 +38,36 @@
     </section>
 
 </main>
+
+<cookie-consent
+    position="bottom"
+    theme="glass"
+    storage-key="consentGiven"
+></cookie-consent>
+
+<glass-footer
+    brand="SimLab"
+    description="Students for Surgery"
+    theme="gold"
+    links='[
+        {"title":"Navigation","items":[
+            {"label":"Start","href":"./"},
+            {"label":"Login","href":"login.html"},
+            {"label":"Dashboard","href":"dashboard.html"},
+            {"label":"Blog","href":"blog.html"},
+            {"label":"Termine","href":"termine-und-veranstaltungen.html"},
+            {"label":"Projekte","href":"projekte.html"}
+        ]},
+        {"title":"Legal","items":[
+            {"label":"Impressum","href":"impressum.html"},
+            {"label":"Datenschutz","href":"datenschutz.html"},
+            {"label":"Über uns","href":"ueber-uns.html"}
+        ]}
+    ]'
+    socials='[
+        {"type":"instagram","href":"#"}
+    ]'
+></glass-footer>
 
 <script src="./js/admin-dashboard.js" type="module"></script>
 
