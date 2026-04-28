@@ -1,5 +1,5 @@
 // termine-und-veranstaltungen.js - Events with Supabase
-import { getEvents, getEventsByDate, getEventById } from "./supabase.js";
+import { getEvents, getEventsByDate, getEventById, testConnection } from "./supabase.js";
 
 let allEvents = [];
 let currentDate = new Date();
@@ -144,6 +144,12 @@ document.getElementById("nextMonth").onclick = () => {
 // Initialize
 async function init() {
     try {
+        // Test database connection on first load
+        if (!window.dbConnectionTested) {
+            window.dbConnectionTested = true;
+            await testConnection();
+        }
+
         allEvents = await getEvents();
         await renderCalendar();
         

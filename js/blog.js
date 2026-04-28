@@ -1,5 +1,5 @@
 // blog.js
-import { getBlog, getBlogById, likeBlogPost } from "./supabase.js";
+import { getBlog, getBlogById, likeBlogPost, supabase, testConnection } from "./supabase.js";
 
 const feedView = document.getElementById("feedView");
 const detailView = document.getElementById("detailView");
@@ -63,6 +63,12 @@ function createPostCard(post) {
 async function renderFeed() {
   feedView.innerHTML = "";
   try {
+    // Test database connection on first load
+    if (!window.dbConnectionTested) {
+      window.dbConnectionTested = true;
+      await testConnection();
+    }
+
     allPosts = await getBlog();
     allPosts.forEach(post => {
       feedView.appendChild(createPostCard(post));
@@ -126,7 +132,14 @@ async function renderDetail(postId) {
     document.getElementById("likeBtn")
       .addEventListener("click", async () => {
         try {
-          await likeBlogPost(postId);
+          const { data: { user } } = await supabase.auth.getUser();
+          const guestId = user ? null : (localStorage.getItem("guest_id") || crypto.randomUUID());
+          
+          if (!user) {
+            localStorage.setItem("guest_id", guestId);
+          }
+          
+          await likeBlogPost(postId, user?.id, guestId);
           post.likes += 1;
           renderDetail(postId);
         } catch (error) {

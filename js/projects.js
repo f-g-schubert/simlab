@@ -1,5 +1,5 @@
 // projects.js - Project Management with Supabase
-import { getProjects, getProjectById, getProjectsByCategory } from "./supabase.js";
+import { getProjects, getProjectById, getProjectsByCategory, testConnection } from "./supabase.js";
 
 let allProjects = [];
 const grid = document.querySelector(".projects-grid");
@@ -122,6 +122,12 @@ function applyFilters() {
 // Initialize
 async function init() {
     try {
+        // Test database connection on first load
+        if (!window.dbConnectionTested) {
+            window.dbConnectionTested = true;
+            await testConnection();
+        }
+
         allProjects = await getProjects();
         renderProjects(allProjects);
     } catch (error) {
