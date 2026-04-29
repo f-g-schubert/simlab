@@ -32,6 +32,7 @@
             <button data-page="posts">Blog</button>
             <button data-page="events">Events</button>
             <button data-page="projects">Projekte</button>
+            <button data-page="users">User</button>
 
             <hr>
 
@@ -46,14 +47,67 @@
 </main>
 
 <div id="modal" class="modal hidden">
-  <div class="modal-content glass">
-    <h3 id="modalTitle"></h3>
-    <form id="modalForm"></form>
+  <div class="modal-backdrop"></div>
 
+  <div class="modal-content glass">
+
+    <!-- HEADER -->
+    <div class="modal-header">
+      <h3 id="modalTitle">Editor</h3>
+      <button id="modalClose">✕</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="modal-tabs">
+      <button data-tab="content" class="active">Content</button>
+      <button data-tab="media">Media</button>
+      <button data-tab="settings">Settings</button>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div class="modal-body">
+
+      <!-- CONTENT TAB -->
+      <div class="tab active" id="tab-content">
+        <form id="modalForm"></form>
+      </div>
+
+      <!-- MEDIA TAB -->
+      <div class="tab" id="tab-media">
+
+        <div class="dropzone" id="dropzone">
+          <p>📁 Bilder reinziehen oder klicken</p>
+          <input type="file" multiple hidden />
+        </div>
+
+        <div id="gallery" class="gallery"></div>
+
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div class="tab" id="tab-settings">
+
+        <div id="eventFields" class="hidden">
+          <label>Datum</label>
+          <input type="date" name="eventDate" />
+
+          <label>Start</label>
+          <input type="time" name="eventStart" />
+
+          <label>Ende</label>
+          <input type="time" name="eventEnd" />
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ACTIONS -->
     <div class="modal-actions">
       <button id="modalCancel">Abbrechen</button>
       <button id="modalSave" class="primary">Speichern</button>
     </div>
+
   </div>
 </div>
 
@@ -72,7 +126,7 @@
     links='[
         {"title":"Navigation","items":[
             {"label":"Start","href":"./"},
-            {"label":"Login","href":"login.html"},
+            {"label":"Login","href":"auth-service.html"},
             {"label":"Dashboard","href":"dashboard.html"},
             {"label":"Blog","href":"blog.html"},
             {"label":"Termine","href":"termine-und-veranstaltungen.html"},

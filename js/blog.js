@@ -33,7 +33,10 @@ function createPostCard(post) {
   el.className = "post";
 
   // Handle images - content.images might be an array or undefined
-  const firstImage = post.images && post.images[0] ? post.images[0] : '';
+  //const firstImage = post.images && post.images[0] ? post.images[0] : '';
+  const firstImage = Array.isArray(post.images) && post.images.length > 0
+  ? post.images[0]
+  : null;
 
   el.innerHTML = `
     <div class="post-header">

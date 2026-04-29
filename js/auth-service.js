@@ -25,7 +25,10 @@ export class AuthService {
     static async logout() {
         await supabase.auth.signOut();
         localStorage.removeItem("sb-access-token");
-        location.reload();
+
+        window.dispatchEvent(new Event("auth-change"));
+
+        window.location.href = "./";
     }
 
     static async getUser() {

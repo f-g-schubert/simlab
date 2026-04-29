@@ -472,33 +472,31 @@ class NavBar extends HTMLElement {
             }
         });
 
-        // Default (nicht eingeloggt)
-        avatar.textContent = "";
-
-        // prüfen Login
-        if (AuthService.isLoggedIn()) {
-            avatar.classList.add("logged-in");
-
-            // User laden
-            AuthService.getUser().then(user => {
-                const initials = getInitials(user.firstName, user.lastName);
-                avatar.textContent = initials;
-            }).catch(() => {
-                avatar.textContent = "?";
-            });
-        }
-
-        async function initUserUI(avatar){
-            if (!AuthService.isLoggedIn()) return;
+        async function updateUserUI() {
+            const isLoggedIn = AuthService.isLoggedIn();
+            if (!isLoggedIn) {
+                avatar.classList.remove("logged-in");
+                avatar.textContent = "";
+                userMenu.innerHTML = `<button id="navLogin">Login</button>`;
+                return;
+            }
 
             try {
                 const user = await AuthService.getUser();
                 avatar.classList.add("logged-in");
                 avatar.textContent = getInitials(user.firstName, user.lastName);
+                userMenu.innerHTML = `
+                    <button id="navDashboard">Dashboard</button>
+                    <button id="navLogout">Logout</button>
+                `;
             } catch {
+                avatar.classList.remove("logged-in");
                 avatar.textContent = "?";
             }
+
         }
+
+        window.addEventListener("auth-change", updateUserUI);
 
         initUserUI(avatar);
     }
