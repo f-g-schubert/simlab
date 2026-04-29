@@ -1,5 +1,6 @@
 // navbar.js
 import { AuthService } from './auth-service.js';
+import { supabase } from './supabase.js';
 
 class NavBar extends HTMLElement {
     constructor() {
