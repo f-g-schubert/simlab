@@ -443,6 +443,10 @@ class NavBar extends HTMLElement {
         const userMenu = this.shadowRoot.getElementById("userMenu");
         const avatar = this.shadowRoot.getElementById("userAvatar");
 
+        /* =========================
+           MENU TOGGLE
+        ========================= */
+
         avatar.addEventListener("click", () => {
             userMenu.classList.toggle("active");
         });
@@ -453,73 +457,74 @@ class NavBar extends HTMLElement {
             }
         });
 
-        this.shadowRoot.addEventListener("click", (e) => {
+        /* =========================
+           NAV ACTIONS
+        ========================= */
+
+        this.shadowRoot.addEventListener("click", async (e) => {
             if (e.target.id === "navLogin") {
                 window.location.href = "./auth-service.html";
             }
-            /*if (e.target.id === "navLogout") {
-                AuthService.logout();
+
+            if (e.target.id === "navLogout") {
+                await AuthService.logout();
+                // SOFORT UI RESET (WICHTIG)
+                avatar.classList.remove("logged-in");
+                avatar.textContent = "";
+                userMenu.innerHTML = `<button id="navLogin">Login</button>`;
+                userMenu.classList.remove("active");
                 window.dispatchEvent(new Event("auth-change"));
-            }*/
-           if (e.target.id === "navLogout") {
-                AuthService.logout().then(() => {
-                    userMenu.classList.remove("active");
-                    avatar.classList.remove("logged-in");
-                    avatar.textContent = "";
-                    window.dispatchEvent(new Event("auth-change"));
-                });
             }
+
             if (e.target.id === "navDashboard") {
                 window.location.href = "./admin-dashboard.html";
             }
+
         });
 
-        async function updateUserUI() {
-            const loggedIn = AuthService.isLoggedIn();
+        /* =========================
+           USER UI (FIXED)
+        ========================= */
 
-            if (!loggedIn) {
+        const updateUserUI = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            // ❌ NICHT EINGELOGGT
+            if (!session) {
                 avatar.classList.remove("logged-in");
                 avatar.textContent = "";
-
                 userMenu.innerHTML = `<button id="navLogin">Login</button>`;
                 return;
             }
 
             try {
-                //const user = await AuthService.getUser();
-
-                avatar.classList.add("logged-in");
-                //avatar.textContent = getInitials(user.firstName, user.lastName);
+                const userId = session.user.id;
                 const { data: profile, error } = await supabase
                     .from("profiles")
                     .select("first_name, last_name")
-                    .eq("id", (await AuthService.getUser()).id)
+                    .eq("id", userId)
                     .single();
-
-                if (error || !profile) {
-                    avatar.textContent = "?";
-                    return;
-                }
-
+                if (error || !profile) throw error;
                 avatar.classList.add("logged-in");
-                avatar.textContent = getInitials(profile.first_name, profile.last_name);
+                avatar.textContent = getInitials(
+                    profile.first_name,
+                    profile.last_name
+                );
 
                 userMenu.innerHTML = `
                     <button id="navDashboard">Dashboard</button>
                     <button id="navLogout">Logout</button>
                 `;
-            } catch {
-                avatar.textContent = "?";
+
+            } catch (err) {
+                console.warn("Profile load failed:", err);
                 avatar.classList.remove("logged-in");
+                avatar.textContent = "?";
+                userMenu.innerHTML = `<button id="navLogin">Login</button>`;
             }
-        }
+        };
 
         updateUserUI();
-        //window.addEventListener("auth-change", updateUserUI);
-        window.addEventListener("auth-change", () => {
-            userMenu.classList.remove("active");
-            updateUserUI();
-        });
+        window.addEventListener("auth-change", updateUserUI);
     }
 }
 
