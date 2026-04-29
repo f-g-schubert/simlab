@@ -1,17 +1,22 @@
-// admin-dashboard.js
 import { supabase } from './supabase.js';
 import { AuthService } from './auth-service.js';
 
 const SUPABASE_URL = 'https://pepkapxyjareghuphjoq.supabase.co';
 
+/* =========================================================
+   STATE
+========================================================= */
 let currentPage = "posts";
-let galleryFiles = []; // files + urls gemischt
+let modalMode = null;
+let modalContextId = null;
 
-init();
+let galleryFiles = []; // string URLs + File objects
 
 /* =========================================================
    INIT
 ========================================================= */
+init();
+
 async function init() {
     const { data } = await supabase.auth.getSession();
 
@@ -22,15 +27,15 @@ async function init() {
 
     bindUI();
     initModal();
-    initUpload();
     initTabs();
+    initUpload();
     initRealtime();
 
     loadPage("posts");
 }
 
 /* =========================================================
-   BASIC UI
+   NAV / UI
 ========================================================= */
 function bindUI() {
     document.querySelectorAll("[data-page]").forEach(btn => {
@@ -53,45 +58,54 @@ async function loadPage(page) {
 }
 
 /* =========================================================
-   MODAL SYSTEM (TABS)
+   MODAL CORE
 ========================================================= */
 const modal = document.getElementById("modal");
-const modalForm = document.getElementById("modalForm");
-let modalSubmit = null;
+const form = document.getElementById("modalForm");
+
+let onSubmitHandler = null;
 
 function initModal() {
     document.getElementById("modalCancel").onclick =
     document.getElementById("modalClose").onclick = closeModal;
 
     document.getElementById("modalSave").onclick = async () => {
-        await modalSubmit();
+        if (onSubmitHandler) await onSubmitHandler();
         closeModal();
     };
 }
 
-function openModal({ title, fields, showUpload = false, isEvent = false, onSubmit }) {
+function openModal({ title, fields = [], contextId = null, type = "default", useMedia = false, useEvent = false, onSubmit }) {
+    modalMode = type;
+    modalContextId = contextId;
+
     document.getElementById("modalTitle").innerText = title;
 
-    modalForm.innerHTML = "";
+    form.innerHTML = "";
     galleryFiles = [];
 
+    // CONTENT FIELDS
     fields.forEach(f => {
-        modalForm.innerHTML += `
-            <label>${f.label}</label>
-            <input name="${f.name}" type="${f.type || "text"}" value="${f.value || ""}">
+        form.innerHTML += `
+            <div class="field">
+                <label>${f.label}</label>
+                <input name="${f.name}" type="${f.type || "text"}" value="${f.value || ""}" />
+            </div>
         `;
     });
 
-    document.getElementById("dropzone").style.display = showUpload ? "block" : "none";
-    document.getElementById("gallery").style.display = showUpload ? "flex" : "none";
-    document.getElementById("eventFields").classList.toggle("hidden", !isEvent);
+    // MEDIA VISIBILITY
+    document.getElementById("tab-media").style.display = useMedia ? "block" : "none";
 
-    modalSubmit = async () => {
-        const data = Object.fromEntries(new FormData(modalForm).entries());
+    // EVENT FIELDS
+    document.getElementById("eventFields").classList.toggle("hidden", !useEvent);
 
-        const uploaded = await uploadGallery();
+    onSubmitHandler = async () => {
+        const data = Object.fromEntries(new FormData(form).entries());
+        const images = await uploadGallery();
 
-        await onSubmit(data, uploaded);
+        await onSubmit(data, images);
+        loadPage(currentPage);
     };
 
     modal.classList.remove("hidden");
@@ -102,7 +116,7 @@ function closeModal() {
 }
 
 /* =========================================================
-   TABS
+   TABS (FIXED)
 ========================================================= */
 function initTabs() {
     document.querySelectorAll(".modal-tabs button").forEach(btn => {
@@ -117,7 +131,7 @@ function initTabs() {
 }
 
 /* =========================================================
-   DRAG & DROP + GALLERY
+   UPLOAD + DRAG DROP
 ========================================================= */
 function initUpload() {
     const dropzone = document.getElementById("dropzone");
@@ -152,10 +166,11 @@ function initUpload() {
             const el = document.createElement("div");
             el.className = "gallery-item";
             el.draggable = true;
+            el.dataset.index = index;
 
             el.innerHTML = `
                 <span>${file.name || file}</span>
-                <button data-i="${index}">✕</button>
+                <button class="glass-button">✕</button>
             `;
 
             el.querySelector("button").onclick = () => {
@@ -163,24 +178,37 @@ function initUpload() {
                 renderGallery();
             };
 
-            // DRAG SORT
+            /* =========================
+               DRAG SORT FIX (REAL ARRAY SWAP)
+            ========================= */
             el.ondragstart = () => el.classList.add("dragging");
 
             el.ondragend = () => {
                 el.classList.remove("dragging");
-                const items = [...gallery.children];
-                galleryFiles = items.map(i => galleryFiles[i.dataset.index]);
+            };
+
+            el.ondragover = (e) => {
+                e.preventDefault();
+
+                const dragging = document.querySelector(".dragging");
+                if (!dragging || dragging === el) return;
+
+                const from = Number(dragging.dataset.index);
+                const to = Number(el.dataset.index);
+
+                const moved = galleryFiles.splice(from, 1)[0];
+                galleryFiles.splice(to, 0, moved);
+
                 renderGallery();
             };
 
-            el.dataset.index = index;
             gallery.appendChild(el);
         });
     }
 }
 
 /* =========================================================
-   UPLOAD MULTI
+   UPLOAD TO SUPABASE
 ========================================================= */
 async function uploadGallery() {
     const urls = [];
@@ -211,12 +239,13 @@ async function renderPosts(container) {
 
     container.innerHTML = `
         <h2>Blog</h2>
-        <button id="newPost">+ Neu</button>
+        <button class="glass-button" id="newPost">+ Neu</button>
+
         ${data.map(p => `
-            <div class="item">
-                ${p.content?.slice(0,50)}
-                <button onclick="editPost(${p.id})">Edit</button>
-                <button onclick="deletePost(${p.id})">Delete</button>
+            <div class="item glass">
+                <b>${p.content?.slice(0,60)}</b>
+                <button class="glass-button" onclick="editPost(${p.id})">Edit</button>
+                <button class="glass-button" onclick="deletePost(${p.id})">Delete</button>
             </div>
         `).join("")}
     `;
@@ -224,47 +253,39 @@ async function renderPosts(container) {
     document.getElementById("newPost").onclick = () => {
         openModal({
             title: "Neuer Post",
-            showUpload: true,
+            useMedia: true,
             fields: [{ name: "content", label: "Inhalt" }],
             onSubmit: async (data, images) => {
                 await supabase.from("blog").insert([{
                     content: data.content,
                     images
                 }]);
-                loadPage("posts");
             }
         });
-    };
-
-    window.editPost = async (id) => {
-        const { data } = await supabase.from("blog").select("*").eq("id", id).single();
-
-        openModal({
-            title: "Post bearbeiten",
-            showUpload: true,
-            fields: [
-                { name: "content", label: "Inhalt", value: data.content }
-            ],
-            onSubmit: async (form, images) => {
-                await supabase.from("blog").update({
-                    content: form.content,
-                    images
-                }).eq("id", id);
-
-                loadPage("posts");
-            }
-        });
-
-        // EXISTING IMAGES reinladen
-        if (data.images) {
-            galleryFiles = [...data.images];
-            renderGallery();
-        }
     };
 }
 
-window.deletePost = id => supabase.from("blog").delete().eq("id", id).then(()=>loadPage("posts"));
-window.editPost = id => console.log("TODO edit");
+window.deletePost = id =>
+    supabase.from("blog").delete().eq("id", id).then(() => loadPage("posts"));
+
+window.editPost = async (id) => {
+    const { data } = await supabase.from("blog").select("*").eq("id", id).single();
+
+    openModal({
+        title: "Post bearbeiten",
+        useMedia: true,
+        fields: [{ name: "content", label: "Inhalt", value: data.content }],
+        onSubmit: async (form, images) => {
+            await supabase.from("blog").update({
+                content: form.content,
+                images
+            }).eq("id", id);
+        }
+    });
+
+    galleryFiles = data.images || [];
+    setTimeout(renderGallery, 0);
+};
 
 /* =========================================================
    PROJECTS
@@ -274,11 +295,12 @@ async function renderProjects(container) {
 
     container.innerHTML = `
         <h2>Projekte</h2>
-        <button id="newProject">+ Neu</button>
+        <button class="glass-button" id="newProject">+ Neu</button>
+
         ${data.map(p => `
-            <div class="item">
+            <div class="item glass">
                 ${p.title}
-                <button onclick="deleteProject(${p.id})">Delete</button>
+                <button class="glass-button" onclick="deleteProject(${p.id})">Delete</button>
             </div>
         `).join("")}
     `;
@@ -286,61 +308,38 @@ async function renderProjects(container) {
     document.getElementById("newProject").onclick = () => {
         openModal({
             title: "Projekt",
-            showUpload: true,
+            useMedia: true,
             fields: [
                 { name: "title", label: "Titel" },
                 { name: "description", label: "Beschreibung" }
             ],
-            onSubmit: async (data, images) => {
-                await supabase.from("projects").insert([{
-                    ...data,
-                    gallery: images
-                }]);
-                loadPage("projects");
-            }
-        });
-    };
-
-    window.editProject = async (id) => {
-        const { data } = await supabase.from("projects").select("*").eq("id", id).single();
-
-        openModal({
-            title: "Projekt bearbeiten",
-            showUpload: true,
-            fields: [
-                { name: "title", label: "Titel", value: data.title },
-                { name: "description", label: "Beschreibung", value: data.description }
-            ],
             onSubmit: async (form, images) => {
-                await supabase.from("projects").update({
+                await supabase.from("projects").insert([{
                     ...form,
                     gallery: images
-                }).eq("id", id);
-
-                loadPage("projects");
+                }]);
             }
         });
-
-        galleryFiles = data.gallery || [];
-        renderGallery();
     };
 }
 
-window.deleteProject = id => supabase.from("projects").delete().eq("id", id).then(()=>loadPage("projects"));
+window.deleteProject = id =>
+    supabase.from("projects").delete().eq("id", id).then(() => loadPage("projects"));
 
 /* =========================================================
-   EVENTS
+   EVENTS (NO MEDIA)
 ========================================================= */
 async function renderEvents(container) {
     const { data } = await supabase.from("events").select("*");
 
     container.innerHTML = `
         <h2>Events</h2>
-        <button id="newEvent">+ Neu</button>
+        <button class="glass-button" id="newEvent">+ Neu</button>
+
         ${data.map(e => `
-            <div class="item">
+            <div class="item glass">
                 ${e.title}
-                <button onclick="deleteEvent(${e.id})">Delete</button>
+                <button class="glass-button" onclick="deleteEvent(${e.id})">Delete</button>
             </div>
         `).join("")}
     `;
@@ -348,37 +347,20 @@ async function renderEvents(container) {
     document.getElementById("newEvent").onclick = () => {
         openModal({
             title: "Event",
-            isEvent: true,
+            useEvent: true,
             fields: [
                 { name: "title", label: "Titel" },
                 { name: "location", label: "Ort" }
             ],
-            onSubmit: async (data) => {
-                await supabase.from("events").insert([data]);
-                loadPage("events");
-            }
-        });
-    };
-
-    window.editEvent = async (id) => {
-        const { data } = await supabase.from("events").select("*").eq("id", id).single();
-
-        openModal({
-            title: "Event bearbeiten",
-            isEvent: true,
-            fields: [
-                { name: "title", label: "Titel", value: data.title },
-                { name: "location", label: "Ort", value: data.location }
-            ],
             onSubmit: async (form) => {
-                await supabase.from("events").update(form).eq("id", id);
-                loadPage("events");
+                await supabase.from("events").insert([form]);
             }
         });
     };
 }
 
-window.deleteEvent = id => supabase.from("events").delete().eq("id", id).then(()=>loadPage("events"));
+window.deleteEvent = id =>
+    supabase.from("events").delete().eq("id", id).then(() => loadPage("events"));
 
 /* =========================================================
    USERS
@@ -387,50 +369,23 @@ async function renderUsers(container) {
     const { data } = await supabase.from("profiles").select("*");
 
     container.innerHTML = data.map(u => `
-        <div class="item">
+        <div class="item glass">
             ${u.first_name} ${u.last_name}
-            <button onclick="setRole('${u.id}','admin')">Admin</button>
+            <button class="glass-button" onclick="setRole('${u.id}','admin')">Admin</button>
         </div>
     `).join("");
 }
 
-window.setRole = (id, role) => supabase.from("profiles").update({ role }).eq("id", id);
+window.setRole = (id, role) =>
+    supabase.from("profiles").update({ role }).eq("id", id);
 
 /* =========================================================
    REALTIME
 ========================================================= */
 function initRealtime() {
-    supabase.channel("db-changes")
+    supabase.channel("admin-realtime")
         .on("postgres_changes", { event: "*", schema: "public" }, () => {
             loadPage(currentPage);
         })
         .subscribe();
 }
-
-/* =========================================================
-    RENDER HELPERS
-========================================================= */
-window.renderGallery = function () {
-    const gallery = document.getElementById("gallery");
-
-    gallery.innerHTML = "";
-
-    galleryFiles.forEach((file, index) => {
-        const el = document.createElement("div");
-        el.className = "gallery-item";
-        el.draggable = true;
-        el.dataset.index = index;
-
-        el.innerHTML = `
-            <span>${file.name || file}</span>
-            <button>✕</button>
-        `;
-
-        el.querySelector("button").onclick = () => {
-            galleryFiles.splice(index, 1);
-            renderGallery();
-        };
-
-        gallery.appendChild(el);
-    });
-};
