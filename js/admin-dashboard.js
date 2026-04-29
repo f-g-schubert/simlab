@@ -235,6 +235,32 @@ async function renderPosts(container) {
             }
         });
     };
+
+    window.editPost = async (id) => {
+        const { data } = await supabase.from("blog").select("*").eq("id", id).single();
+
+        openModal({
+            title: "Post bearbeiten",
+            showUpload: true,
+            fields: [
+                { name: "content", label: "Inhalt", value: data.content }
+            ],
+            onSubmit: async (form, images) => {
+                await supabase.from("blog").update({
+                    content: form.content,
+                    images
+                }).eq("id", id);
+
+                loadPage("posts");
+            }
+        });
+
+        // EXISTING IMAGES reinladen
+        if (data.images) {
+            galleryFiles = [...data.images];
+            renderGallery();
+        }
+    };
 }
 
 window.deletePost = id => supabase.from("blog").delete().eq("id", id).then(()=>loadPage("posts"));
@@ -274,6 +300,30 @@ async function renderProjects(container) {
             }
         });
     };
+
+    window.editProject = async (id) => {
+        const { data } = await supabase.from("projects").select("*").eq("id", id).single();
+
+        openModal({
+            title: "Projekt bearbeiten",
+            showUpload: true,
+            fields: [
+                { name: "title", label: "Titel", value: data.title },
+                { name: "description", label: "Beschreibung", value: data.description }
+            ],
+            onSubmit: async (form, images) => {
+                await supabase.from("projects").update({
+                    ...form,
+                    gallery: images
+                }).eq("id", id);
+
+                loadPage("projects");
+            }
+        });
+
+        galleryFiles = data.gallery || [];
+        renderGallery();
+    };
 }
 
 window.deleteProject = id => supabase.from("projects").delete().eq("id", id).then(()=>loadPage("projects"));
@@ -309,6 +359,23 @@ async function renderEvents(container) {
             }
         });
     };
+
+    window.editEvent = async (id) => {
+        const { data } = await supabase.from("events").select("*").eq("id", id).single();
+
+        openModal({
+            title: "Event bearbeiten",
+            isEvent: true,
+            fields: [
+                { name: "title", label: "Titel", value: data.title },
+                { name: "location", label: "Ort", value: data.location }
+            ],
+            onSubmit: async (form) => {
+                await supabase.from("events").update(form).eq("id", id);
+                loadPage("events");
+            }
+        });
+    };
 }
 
 window.deleteEvent = id => supabase.from("events").delete().eq("id", id).then(()=>loadPage("events"));
@@ -339,3 +406,31 @@ function initRealtime() {
         })
         .subscribe();
 }
+
+/* =========================================================
+    RENDER HELPERS
+========================================================= */
+window.renderGallery = function () {
+    const gallery = document.getElementById("gallery");
+
+    gallery.innerHTML = "";
+
+    galleryFiles.forEach((file, index) => {
+        const el = document.createElement("div");
+        el.className = "gallery-item";
+        el.draggable = true;
+        el.dataset.index = index;
+
+        el.innerHTML = `
+            <span>${file.name || file}</span>
+            <button>✕</button>
+        `;
+
+        el.querySelector("button").onclick = () => {
+            galleryFiles.splice(index, 1);
+            renderGallery();
+        };
+
+        gallery.appendChild(el);
+    });
+};

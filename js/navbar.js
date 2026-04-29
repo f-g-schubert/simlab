@@ -1,3 +1,4 @@
+// navbar.js
 import { AuthService } from './auth-service.js';
 
 class NavBar extends HTMLElement {
@@ -439,19 +440,13 @@ class NavBar extends HTMLElement {
         /* =========================
             USER AREA
         ========================= */
-        const userArea = this.shadowRoot.getElementById("userArea");
         const userMenu = this.shadowRoot.getElementById("userMenu");
         const avatar = this.shadowRoot.getElementById("userAvatar");
-
-        if (!AuthService.isLoggedIn()) {
-            userMenu.innerHTML = `<button id="navLogin">Login</button>`;
-        }
 
         avatar.addEventListener("click", () => {
             userMenu.classList.toggle("active");
         });
 
-        /* Klick außerhalb = userMenu schließen */
         document.addEventListener("click", (e) => {
             if (!e.composedPath().includes(this)) {
                 userMenu.classList.remove("active");
@@ -462,43 +457,43 @@ class NavBar extends HTMLElement {
             if (e.target.id === "navLogin") {
                 window.location.href = "./auth-service.html";
             }
-
             if (e.target.id === "navLogout") {
                 AuthService.logout();
+                window.dispatchEvent(new Event("auth-change"));
             }
-
             if (e.target.id === "navDashboard") {
                 window.location.href = "./admin-dashboard.html";
             }
         });
 
         async function updateUserUI() {
-            const isLoggedIn = AuthService.isLoggedIn();
-            if (!isLoggedIn) {
+            const loggedIn = AuthService.isLoggedIn();
+
+            if (!loggedIn) {
                 avatar.classList.remove("logged-in");
                 avatar.textContent = "";
+
                 userMenu.innerHTML = `<button id="navLogin">Login</button>`;
                 return;
             }
 
             try {
                 const user = await AuthService.getUser();
+
                 avatar.classList.add("logged-in");
                 avatar.textContent = getInitials(user.firstName, user.lastName);
+
                 userMenu.innerHTML = `
                     <button id="navDashboard">Dashboard</button>
                     <button id="navLogout">Logout</button>
                 `;
             } catch {
-                avatar.classList.remove("logged-in");
                 avatar.textContent = "?";
             }
-
         }
 
+        updateUserUI();
         window.addEventListener("auth-change", updateUserUI);
-
-        initUserUI(avatar);
     }
 }
 
