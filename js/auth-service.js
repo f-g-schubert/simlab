@@ -3,12 +3,9 @@ import { supabase } from './supabase.js';
 
 export class AuthService {
 
-    static getToken() {
-        return localStorage.getItem("sb-access-token");
-    }
-
-    static isLoggedIn() {
-        return !!this.getToken();
+    static async isLoggedIn() {
+        const { data } = await supabase.auth.getSession();
+        return !!data.session;
     }
 
     static async login(email, password) {
@@ -23,10 +20,6 @@ export class AuthService {
         localStorage.setItem("sb-access-token", data.session.access_token);
 
         return data;
-    }
-
-    static async register(email, password) {
-        return await supabase.auth.signUp({ email, password });
     }
 
     static async logout() {
