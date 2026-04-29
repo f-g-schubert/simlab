@@ -75,7 +75,7 @@ function initModal() {
     };
 }
 
-function openModal({ title, fields = [], contextId = null, type = "default", useMedia = false, useEvent = false, onSubmit }) {
+function openModal({ title, fields = [], contextId = null, type = "default", onSubmit }) {
     modalMode = type;
     modalContextId = contextId;
 
@@ -94,11 +94,38 @@ function openModal({ title, fields = [], contextId = null, type = "default", use
         `;
     });
 
-    // MEDIA VISIBILITY
-    document.getElementById("tab-media").style.display = useMedia ? "block" : "none";
+    // TAB VISIBILITY BASED ON TYPE
+    if (type === "blog" || type === "project") {
+        document.getElementById("tab-media").style.display = "block";
+        document.getElementById("tab-settings").style.display = "none";
+    } else if (type === "event") {
+        document.getElementById("tab-media").style.display = "none";
+        document.getElementById("tab-settings").style.display = "block";
+    } else {
+        // default: show all or hide
+        document.getElementById("tab-media").style.display = "none";
+        document.getElementById("tab-settings").style.display = "none";
+    }
 
-    // EVENT FIELDS
-    document.getElementById("eventFields").classList.toggle("hidden", !useEvent);
+    // EVENT FIELDS VISIBILITY
+    document.getElementById("eventFields").classList.toggle("hidden", type !== "event");
+
+    // SET ACTIVE TAB TO FIRST VISIBLE
+    const tabs = document.querySelectorAll(".modal-tabs button");
+    let firstVisible = null;
+    for (let btn of tabs) {
+        const tabEl = document.getElementById("tab-" + btn.dataset.tab);
+        if (tabEl && tabEl.style.display !== "none") {
+            firstVisible = btn;
+            break;
+        }
+    }
+    if (firstVisible) {
+        document.querySelectorAll(".modal-tabs button").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        firstVisible.classList.add("active");
+        document.getElementById("tab-" + firstVisible.dataset.tab).classList.add("active");
+    }
 
     onSubmitHandler = async () => {
         const data = Object.fromEntries(new FormData(form).entries());
@@ -253,7 +280,7 @@ async function renderPosts(container) {
     document.getElementById("newPost").onclick = () => {
         openModal({
             title: "Neuer Post",
-            useMedia: true,
+            type: "blog",
             fields: [{ name: "content", label: "Inhalt" }],
             onSubmit: async (data, images) => {
                 await supabase.from("blog").insert([{
@@ -273,7 +300,7 @@ window.editPost = async (id) => {
 
     openModal({
         title: "Post bearbeiten",
-        useMedia: true,
+        type: "blog",
         fields: [{ name: "content", label: "Inhalt", value: data.content }],
         onSubmit: async (form, images) => {
             await supabase.from("blog").update({
@@ -308,7 +335,7 @@ async function renderProjects(container) {
     document.getElementById("newProject").onclick = () => {
         openModal({
             title: "Projekt",
-            useMedia: true,
+            type: "project",
             fields: [
                 { name: "title", label: "Titel" },
                 { name: "description", label: "Beschreibung" }
@@ -347,7 +374,7 @@ async function renderEvents(container) {
     document.getElementById("newEvent").onclick = () => {
         openModal({
             title: "Event",
-            useEvent: true,
+            type: "event",
             fields: [
                 { name: "title", label: "Titel" },
                 { name: "location", label: "Ort" }
@@ -389,3 +416,31 @@ function initRealtime() {
         })
         .subscribe();
 }
+
+/* =========================================================
+    RENDER HELPERS
+========================================================= */
+window.renderGallery = function () {
+    const gallery = document.getElementById("gallery");
+
+    gallery.innerHTML = "";
+
+    galleryFiles.forEach((file, index) => {
+        const el = document.createElement("div");
+        el.className = "gallery-item";
+        el.draggable = true;
+        el.dataset.index = index;
+
+        el.innerHTML = `
+            <span>${file.name || file}</span>
+            <button>✕</button>
+        `;
+
+        el.querySelector("button").onclick = () => {
+            galleryFiles.splice(index, 1);
+            renderGallery();
+        };
+
+        gallery.appendChild(el);
+    });
+};
