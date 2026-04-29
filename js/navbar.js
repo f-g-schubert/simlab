@@ -484,48 +484,134 @@ class NavBar extends HTMLElement {
         });
 
         /* =========================
-           USER UI (FIXED)
+
+           USER UI (FIXED + SAFE)
+
         ========================= */
 
         const updateUserUI = async () => {
+
             const { data: { session } } = await supabase.auth.getSession();
-            // ❌ NICHT EINGELOGGT
+
+            // ❌ Nicht eingeloggt
+
             if (!session) {
+
                 avatar.classList.remove("logged-in");
+
                 avatar.textContent = "";
+
                 userMenu.innerHTML = `<button id="navLogin">Login</button>`;
+
                 return;
+
             }
 
+            const userId = session.user.id;
+
             try {
-                const userId = session.user.id;
+
                 const { data: profile, error } = await supabase
+
                     .from("profiles")
+
                     .select("first_name, last_name")
+
                     .eq("id", userId)
-                    .single();
-                if (error || !profile) throw error;
+
+                    .maybeSingle(); // 🔥 WICHTIG: kein crash wenn leer
+
+                if (error) throw error;
+
                 avatar.classList.add("logged-in");
-                avatar.textContent = getInitials(
-                    profile.first_name,
-                    profile.last_name
-                );
+
+                if (profile) {
+
+                    avatar.textContent = getInitials(
+
+                        profile.first_name,
+
+                        profile.last_name
+
+                    );
+
+                } else {
+
+                    // 🔥 FALLBACK wenn kein Profil existiert
+
+                    avatar.textContent = "??";
+
+                }
 
                 userMenu.innerHTML = `
+
                     <button id="navDashboard">Dashboard</button>
+
                     <button id="navLogout">Logout</button>
+
                 `;
 
             } catch (err) {
+
                 console.warn("Profile load failed:", err);
+
                 avatar.classList.remove("logged-in");
+
                 avatar.textContent = "?";
-                userMenu.innerHTML = `<button id="navLogin">Login</button>`;
+
+                userMenu.innerHTML = `
+
+                    <button id="navDashboard">Dashboard</button>
+
+                    <button id="navLogout">Logout</button>
+
+                `;
+
             }
+
         };
 
         updateUserUI();
+
         window.addEventListener("auth-change", updateUserUI);
+
+        /* =========================
+
+           ACTIONS
+
+        ========================= */
+
+        this.shadowRoot.addEventListener("click", async (e) => {
+
+            if (e.target.id === "navLogin") {
+
+                window.location.href = "./auth-service.html";
+
+            }
+
+            if (e.target.id === "navLogout") {
+
+                await AuthService.logout();
+
+                avatar.classList.remove("logged-in");
+
+                avatar.textContent = "";
+
+                userMenu.innerHTML = `<button id="navLogin">Login</button>`;
+
+                userMenu.classList.remove("active");
+
+                window.dispatchEvent(new Event("auth-change"));
+
+            }
+
+            if (e.target.id === "navDashboard") {
+
+                window.location.href = "./admin-dashboard.html";
+
+            }
+
+        });
     }
 }
 
