@@ -65,13 +65,22 @@ const form = document.getElementById("modalForm");
 
 let onSubmitHandler = null;
 
+let modalOnSubmit = null;
+
 function initModal() {
     document.getElementById("modalCancel").onclick =
     document.getElementById("modalClose").onclick = closeModal;
 
     document.getElementById("modalSave").onclick = async () => {
-        if (onSubmitHandler) await onSubmitHandler();
+        if (!modalOnSubmit) return;
+
+        const formData = Object.fromEntries(new FormData(form).entries());
+        const images = await uploadGallery();
+
+        await modalOnSubmit(formData, images);
+
         closeModal();
+        loadPage(currentPage);
     };
 }
 
@@ -127,13 +136,14 @@ function openModal({ title, fields = [], contextId = null, type = "default", onS
         document.getElementById("tab-" + firstVisible.dataset.tab).classList.add("active");
     }
 
-    onSubmitHandler = async () => {
+    /*onSubmitHandler = async () => {
         const data = Object.fromEntries(new FormData(form).entries());
         const images = await uploadGallery();
 
         await onSubmit(data, images);
         loadPage(currentPage);
-    };
+    };*/
+    modalOnSubmit = onSubmit;
 
     modal.classList.remove("hidden");
 }
@@ -208,7 +218,7 @@ function initUpload() {
             /* =========================
                DRAG SORT FIX (REAL ARRAY SWAP)
             ========================= */
-            el.ondragstart = () => el.classList.add("dragging");
+            /*el.ondragstart = () => el.classList.add("dragging");
 
             el.ondragend = () => {
                 el.classList.remove("dragging");
@@ -227,7 +237,35 @@ function initUpload() {
                 galleryFiles.splice(to, 0, moved);
 
                 renderGallery();
+            };*/
+
+            let dragIndex = null;
+
+            el.ondragstart = () => {
+                dragIndex = index;
+                el.classList.add("dragging");
             };
+
+            el.ondragend = () => {
+                el.classList.remove("dragging");
+            };
+
+            el.ondrop = (e) => {
+                e.preventDefault();
+
+                const targetIndex = index;
+
+                if (dragIndex === null || dragIndex === targetIndex) return;
+
+                const moved = galleryFiles.splice(dragIndex, 1)[0];
+                galleryFiles.splice(targetIndex, 0, moved);
+
+                dragIndex = null;
+                renderGallery();
+            };
+
+            el.ondragover = (e) => e.preventDefault();
+
 
             gallery.appendChild(el);
         });

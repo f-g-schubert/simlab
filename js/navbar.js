@@ -457,9 +457,17 @@ class NavBar extends HTMLElement {
             if (e.target.id === "navLogin") {
                 window.location.href = "./auth-service.html";
             }
-            if (e.target.id === "navLogout") {
+            /*if (e.target.id === "navLogout") {
                 AuthService.logout();
                 window.dispatchEvent(new Event("auth-change"));
+            }*/
+           if (e.target.id === "navLogout") {
+                AuthService.logout().then(() => {
+                    userMenu.classList.remove("active");
+                    avatar.classList.remove("logged-in");
+                    avatar.textContent = "";
+                    window.dispatchEvent(new Event("auth-change"));
+                });
             }
             if (e.target.id === "navDashboard") {
                 window.location.href = "./admin-dashboard.html";
@@ -478,10 +486,23 @@ class NavBar extends HTMLElement {
             }
 
             try {
-                const user = await AuthService.getUser();
+                //const user = await AuthService.getUser();
 
                 avatar.classList.add("logged-in");
-                avatar.textContent = getInitials(user.firstName, user.lastName);
+                //avatar.textContent = getInitials(user.firstName, user.lastName);
+                const { data: profile, error } = await supabase
+                    .from("profiles")
+                    .select("first_name, last_name")
+                    .eq("id", (await AuthService.getUser()).id)
+                    .single();
+
+                if (error || !profile) {
+                    avatar.textContent = "?";
+                    return;
+                }
+
+                avatar.classList.add("logged-in");
+                avatar.textContent = getInitials(profile.first_name, profile.last_name);
 
                 userMenu.innerHTML = `
                     <button id="navDashboard">Dashboard</button>
@@ -489,11 +510,16 @@ class NavBar extends HTMLElement {
                 `;
             } catch {
                 avatar.textContent = "?";
+                avatar.classList.remove("logged-in");
             }
         }
 
         updateUserUI();
-        window.addEventListener("auth-change", updateUserUI);
+        //window.addEventListener("auth-change", updateUserUI);
+        window.addEventListener("auth-change", () => {
+            userMenu.classList.remove("active");
+            updateUserUI();
+        });
     }
 }
 
