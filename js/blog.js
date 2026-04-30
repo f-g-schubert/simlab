@@ -172,7 +172,7 @@ async function renderDetail(postId) {
 
           <div id="commentList"></div>
 
-          <div class="comment-input">
+          <div class="comment-input glass-field">
             <textarea id="commentText" placeholder="Kommentar schreiben..."></textarea>
             <button id="sendComment">Senden</button>
           </div>
@@ -249,6 +249,7 @@ async function loadComments(postId) {
   comments.forEach(c => {
     const div = document.createElement("div");
     div.className = "comment";
+    div.classList.add("glass-comment");
     div.innerHTML = `
       <strong>${c.user_name}</strong>
       <p>${c.text}</p>
