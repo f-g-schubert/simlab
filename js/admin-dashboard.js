@@ -101,15 +101,15 @@ function openBlogModal({ data = null, onSubmit }) {
     document.getElementById("eventFields").classList.add("hidden");
 
     form.innerHTML = `
-        <div class="field">
+        <div class="field glass-field">
             <label>Inhalt</label>
             <textarea name="content">${data?.content || ""}</textarea>
         </div>
 
-        <div class="field">
+        <div class="field glass-field">
             <label>Bild-URL</label>
             <input id="imageUrlInput" placeholder="https://..." />
-            <button type="button" id="addImageUrl">Hinzufügen</button>
+            <button type="glass-button" id="addImageUrl">Hinzufügen</button>
         </div>
     `;
 
@@ -137,20 +137,46 @@ function openProjectModal({ data = null, onSubmit }) {
     document.getElementById("eventFields").classList.add("hidden");
 
     form.innerHTML = `
-        <input name="title" placeholder="Titel" value="${data?.title || ""}" />
-        <input name="description" placeholder="Kurzbeschreibung" value="${data?.description || ""}" />
-        <textarea name="fullText" placeholder="Text">${data?.fullText || ""}</textarea>
+        <div class="field glass-field">
+            <label>Titel</label>
+            <input name="title" placeholder="Projektname" value="${data?.title || ""}" />
+        </div>
 
-        <input name="category" placeholder="Kategorie" value="${data?.category || ""}" />
-        <input name="status" placeholder="Status" value="${data?.status || ""}" />
-        <input name="cover" placeholder="Cover URL" value="${data?.cover || ""}" />
+        <div class="field glass-field">
+            <label>Kurzbeschreibung</label>
+            <input name="description" placeholder="Kurz erklärt worum es geht" value="${data?.description || ""}" />
+        </div>
 
-        <input name="tags" placeholder="tag1,tag2" value="${data?.tags?.join(",") || ""}" />
+        <div class="field glass-field">
+            <label>Ausführlicher Text</label>
+            <textarea name="fullText" placeholder="Detaillierte Beschreibung">${data?.fullText || ""}</textarea>
 
-        <div class="field">
-            <label>Bild-URL</label>
-            <input id="imageUrlInput" placeholder="https://..." />
-            <button type="button" id="addImageUrl">Hinzufügen</button>
+        </div>
+
+        <div class="field glass-field">
+            <label>Kategorie</label>
+            <input name="category" placeholder="z.B. Forschung, App, KI" value="${data?.category || ""}" />
+        </div>
+
+        <div class="field glass-field">
+            <label>Status</label>
+            <input name="status" placeholder="z.B. in Entwicklung, abgeschlossen" value="${data?.status || ""}" />
+        </div>
+
+        <div class="field glass-field">
+            <label>Cover Bild</label>
+            <input name="cover" placeholder="https://cover-image.com" value="${data?.cover || ""}" />
+        </div>
+
+        <div class="field glass-field">
+            <label>Tags</label>
+            <input name="tags" placeholder="ai, research, medical" value="${data?.tags?.join(",") || ""}" />
+        </div>
+
+        <div class="field glass-field">
+            <label>Bild hinzufügen</label>
+            <input id="imageUrlInput" placeholder="https://image-url.com" />
+            <button type="button" id="addImageUrl" class="glass-button">Hinzufügen</button>
         </div>
     `;
 
@@ -178,28 +204,58 @@ function openEventModal({ data = null, onSubmit }) {
         d ? d.toISOString().split("T")[1].slice(0, 5) : "";
 
     form.innerHTML = `
-        <input name="title" value="${data?.title || ""}" />
-        <input name="location" value="${data?.location || ""}" />
+        <div class="field glass-field">
+            <label>Titel</label>
+            <input name="title" placeholder="z.B. Neurochirurgie Workshop" value="${data?.title || ""}" />
+        </div>
 
-        <input type="date" name="eventDate"
-            value="${start ? start.toISOString().split("T")[0] : ""}" />
+        <div class="field glass-field">
+            <label>Ort</label>
+            <input name="location" placeholder="z.B. Universitätsklinikum Hamburg" value="${data?.location || ""}" />
+        </div>
 
-        <input type="time" name="eventStart"
-            value="${formatTime(start)}" />
+        <div class="field glass-field">
+            <label>Datum</label>
+            <input type="date" name="eventDate"
+                value="${start ? start.toISOString().split("T")[0] : ""}" />
+        </div>
 
-        <input type="time" name="eventEnd"
-            value="${formatTime(end)}" />
+        <div class="field glass-field">
+            <label>Startzeit</label>
+            <input type="time" name="eventStart"
+                value="${formatTime(start)}" />
+        </div>
 
-        <textarea name="description">${data?.description || ""}</textarea>
-        <input name="info" value="${data?.info || ""}" />
+        <div class="field glass-field">
+            <label>Endzeit</label>
+            <input type="time" name="eventEnd"
+                value="${formatTime(end)}" />
+        </div>
 
-        <input name="requirements"
-            value="${data?.requirements?.join(",") || ""}" />
+        <div class="field glass-field">
+            <label>Beschreibung</label>
+            <textarea name="description" placeholder="Kurzbeschreibung des Events">${data?.description || ""}</textarea>
+        </div>
 
-        <input name="tags"
-            value="${data?.tags?.join(",") || ""}" />
+        <div class="field glass-field">
+            <label>Info</label>
+            <input name="info" placeholder="Zusatzinfos (optional)" value="${data?.info || ""}" />
+        </div>
 
-        <input name="color" value="${data?.color || ""}" />
+        <div class="field glass-field">
+            <label>Voraussetzungen</label>
+            <input name="requirements" placeholder="z.B. Anatomie Grundkenntnisse" value="${data?.requirements?.join(",") || ""}" />
+        </div>
+
+        <div class="field glass-field">
+            <label>Tags</label>
+            <input name="tags" placeholder="z.B. chirurgie, workshop" value="${data?.tags?.join(",") || ""}" />
+        </div>
+
+        <div class="field glass-field">
+            <label>Farbcode</label>
+            <input name="color" placeholder="#999999" value="${data?.color || ""}" />
+        </div>
     `;
 
     document.getElementById("modalTitle").innerText =
