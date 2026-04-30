@@ -83,7 +83,7 @@ class CookieConsent extends HTMLElement {
 
         <div class="box">
             <div class="text">
-                Diese Website verwendet lokale Speicherung (localStorage), um Login-Funktionen bereitzustellen.
+                Diese Website verwendet technisch notwendige Speichertechnologien sowie den Dienst Supabase zur Bereitstellung von Benutzerkonten und Datenbankfunktionen.
                 Weitere Informationen findest du in der 
                 <a href="datenschutz.html">Datenschutzerklärung</a>.
             </div>
