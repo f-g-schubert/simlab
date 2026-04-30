@@ -51,7 +51,6 @@
 
   <div class="modal-content glass">
 
-    <!-- HEADER -->
     <div class="modal-header">
       <h3 id="modalTitle">Editor</h3>
       <button id="modalClose" class="glass-button">✕</button>
@@ -64,29 +63,20 @@
       <button data-tab="settings" class="glass-button">Settings</button>
     </div>
 
-    <!-- TAB CONTENT -->
     <div class="modal-body">
 
-      <!-- CONTENT TAB -->
+      <!-- CONTENT -->
       <div class="tab active" id="tab-content">
         <form id="modalForm"></form>
       </div>
 
-      <!-- MEDIA TAB -->
+      <!-- MEDIA (WIRD DYNAMISCH AKTIVIERT) -->
       <div class="tab" id="tab-media">
-
-        <div class="dropzone" id="dropzone">
-          <p>📁 Bilder reinziehen oder klicken</p>
-          <input type="file" multiple hidden />
-        </div>
-
-        <div id="gallery" class="gallery"></div>
-
+        <div id="mediaContainer"></div>
       </div>
 
-      <!-- SETTINGS TAB -->
+      <!-- SETTINGS -->
       <div class="tab" id="tab-settings">
-
         <div id="eventFields" class="hidden">
           <label>Datum</label>
           <input type="date" name="eventDate" />
@@ -97,12 +87,10 @@
           <label>Ende</label>
           <input type="time" name="eventEnd" />
         </div>
-
       </div>
 
     </div>
 
-    <!-- ACTIONS -->
     <div class="modal-actions">
       <button id="modalCancel" class="glass-button">Abbrechen</button>
       <button id="modalSave" class="glass-button primary">Speichern</button>
