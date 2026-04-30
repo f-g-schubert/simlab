@@ -82,26 +82,51 @@ export async function getBlogById(id) {
     }
 }
 
-export async function likeBlogPost(postId, userId = null, guestId = null) {
-    try {
-        const { error } = await supabase
-            .from('likes')
-            .insert([{
-                post_id: postId,
-                user_id: userId,
-                guest_id: guestId
-            }]);
+export async function likeBlogPost(postId, userId, guestId) {
+  // Prüfen ob Like existiert
+  let query = supabase
+    .from("likes")
+    .select("id")
+    .eq("post_id", postId);
 
-        if (error) {
-            console.error('Fehler beim Speichern von Like:', error);
-            return false;
+  if (userId) {
+    query = query.eq("user_id", userId);
+  } else {
+    query = query.eq("guest_id", guestId);
+  }
+
+  const { data: existing, error } = await query;
+
+  if (error) throw error;
+
+  // 👉 Toggle
+  if (existing.length > 0) {
+    // UNLIKE
+    const { error: delError } = await supabase
+      .from("likes")
+      .delete()
+      .eq("post_id", postId)
+      .match(userId ? { user_id: userId } : { guest_id: guestId });
+
+    if (delError) throw delError;
+
+    return { liked: false };
+  } else {
+    // LIKE
+    const { error: insertError } = await supabase
+      .from("likes")
+      .insert([
+        {
+          post_id: postId,
+          user_id: userId,
+          guest_id: guestId
         }
+      ]);
 
-        return true;
-    } catch (error) {
-        console.error('Netzwerkfehler beim Speichern von Like:', error);
-        return false;
-    }
+    if (insertError) throw insertError;
+
+    return { liked: true };
+  }
 }
 
 // COMMENTS

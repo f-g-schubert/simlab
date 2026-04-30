@@ -17,7 +17,15 @@ let currentView = "feed";
 let selectedPostId = null;
 let allPosts = [];
 
+let commentsChannel = null;
+let likesChannel = null;
+
 function switchView(view, postId = null) {
+
+  // cleanup realtime
+  if (commentsChannel) supabase.removeChannel(commentsChannel);
+  if (likesChannel) supabase.removeChannel(likesChannel);
+
   currentView = view;
   selectedPostId = postId;
 
@@ -151,18 +159,21 @@ async function renderDetail(postId) {
       .addEventListener("click", async () => {
         try {
           const { data: { user } } = await supabase.auth.getUser();
-          const guestId = user ? null : (localStorage.getItem("guest_id") || crypto.randomUUID());
-          
+          const guestId = user
+            ? null
+            : (localStorage.getItem("guest_id") || crypto.randomUUID());
+
           if (!user) {
             localStorage.setItem("guest_id", guestId);
           }
-          
+
           await likeBlogPost(postId, user?.id, guestId);
 
-          // neu laden statt +1 lokal
-          renderDetail(postId);
+          // KEIN renderDetail() mehr!
+          // Realtime übernimmt Update
+
         } catch (error) {
-          console.error("Fehler beim Speichern des Likes:", error);
+          console.error("Like Fehler:", error);
         }
       });
     
@@ -222,8 +233,12 @@ renderFeed();
 
 /* SUBSCRIPTIONS */
 function subscribeComments(postId) {
-  return supabase
-    .channel("comments-channel")
+  if (commentsChannel) {
+    supabase.removeChannel(commentsChannel);
+  }
+
+  commentsChannel = supabase
+    .channel("comments-channel-" + postId)
     .on(
       "postgres_changes",
       {
@@ -238,8 +253,12 @@ function subscribeComments(postId) {
 }
 
 function subscribeLikes(postId) {
-  return supabase
-    .channel("likes-channel")
+  if (likesChannel) {
+    supabase.removeChannel(likesChannel);
+  }
+
+  likesChannel = supabase
+    .channel("likes-channel-" + postId)
     .on(
       "postgres_changes",
       {
