@@ -55,33 +55,36 @@ function truncateText(text, max = 200) {
 }
 
 async function createPostCard(post, likeCount) {
+
+  if (!post) {
+    console.warn("createPostCard received invalid post:", post);
+    return document.createElement("div");
+  }
+
   const el = document.createElement("div");
   el.className = "post";
 
-  // Handle images - content.images might be an array or undefined
-  //const firstImage = post.images && post.images[0] ? post.images[0] : '';
   const firstImage = Array.isArray(post.images) && post.images.length > 0
-  ? post.images[0]
-  : null;
+    ? post.images[0]
+    : null;
 
   el.innerHTML = `
     <div class="post-header">
-      <img src="${post.avatar}" />
-      <strong>${post.author}</strong>
+      <img src="${post.avatar || ''}" />
+      <strong>${post.author || 'Unknown'}</strong>
     </div>
 
     ${firstImage ? `<img class="post-image" src="${firstImage}" />` : ""}
 
     <div class="post-content">
-      ${truncateText(post.content)}
+      ${truncateText(post.content || "")}
     </div>
 
     <div class="post-actions">
-      ❤️ ${likeCount} 💬 0
+      ❤️ ${likeCount ?? 0} 💬 0
     </div>
   `;
 
-  // Click to open detail
   el.addEventListener("click", () => {
     switchView("detail", post.id);
   });
@@ -91,18 +94,32 @@ async function createPostCard(post, likeCount) {
 
 async function renderFeed() {
   feedView.innerHTML = "";
+
   try {
-    // Test database connection on first load
     if (!window.dbConnectionTested) {
       window.dbConnectionTested = true;
       await testConnection();
     }
 
     allPosts = await getBlog();
+
     for (const post of allPosts) {
+
+      // 👉 SAFETY GUARD
+      if (!post || !post.id) continue;
+
       const likeCount = await getLikesCount(post.id, post.likes || 0);
-      feedView.appendChild(createPostCard(post, likeCount));
+
+      const node = await createPostCard(post, likeCount);
+
+      // 👉 FINAL SAFETY CHECK
+      if (node instanceof Node) {
+        feedView.appendChild(node);
+      } else {
+        console.warn("Invalid node skipped:", node);
+      }
     }
+
   } catch (error) {
     console.error("Fehler beim Laden des Feeds:", error);
     feedView.innerHTML = "<p>Fehler beim Laden der Blog-Beiträge</p>";
