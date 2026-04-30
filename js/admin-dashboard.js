@@ -462,12 +462,21 @@ async function renderProjects(container) {
     document.getElementById("newProject").onclick = () => {
         openProjectModal({
             onSubmit: async (form, images) => {
-                await supabase.from("projects").insert([{
-                    ...form,
-                    gallery: images,
-                    tags: form.tags ? form.tags.split(",") : [],
-                    date: new Date()
-                }]);
+
+                const payload = {
+                    title: form.title || "",
+                    description: form.description || "",
+                    fullText: form.fullText || "",
+                    category: form.category || "",
+                    status: form.status || "",
+                    cover: form.cover || "",
+                    gallery: images || [],
+                    tags: form.tags ? form.tags.split(",").map(t => t.trim()) : [],
+                    date: new Date().toISOString()
+                };
+
+                const { error } = await supabase.from("projects").insert([payload]);
+                if (error) throw error;
             }
         });
     };
@@ -486,11 +495,24 @@ window.editProject = async (id) => {
     openProjectModal({
         data,
         onSubmit: async (form, images) => {
-            await supabase.from("projects").update({
-                ...form,
+
+            const payload = {
+                title: form.title,
+                description: form.description,
+                fullText: form.fullText,
+                category: form.category,
+                status: form.status,
+                cover: form.cover,
                 gallery: images,
-                tags: form.tags ? form.tags.split(",") : []
-            }).eq("id", id);
+                tags: form.tags ? form.tags.split(",").map(t => t.trim()) : []
+            };
+
+            const { error } = await supabase
+                .from("projects")
+                .update(payload)
+                .eq("id", id);
+
+            if (error) throw error;
         }
     });
 };
@@ -518,16 +540,32 @@ async function renderEvents(container) {
         openEventModal({
             onSubmit: async (form) => {
 
-                const start = new Date(`${form.eventDate}T${form.eventStart}`);
-                const end = new Date(`${form.eventDate}T${form.eventEnd}`);
+                if (!form.eventDate || !form.eventStart || !form.eventEnd) {
+                    alert("Datum + Zeiten erforderlich");
+                    return;
+                }
 
-                await supabase.from("events").insert([{
-                    ...form,
+                const start = new Date(`${form.eventDate}T${form.eventStart}`).toISOString();
+                const end = new Date(`${form.eventDate}T${form.eventEnd}`).toISOString();
+
+                const payload = {
+                    title: form.title || "",
+                    location: form.location || "",
+                    description: form.description || "",
+                    info: form.info || "",
+                    requirements: form.requirements
+                        ? form.requirements.split(",").map(r => r.trim())
+                        : [],
+                    tags: form.tags
+                        ? form.tags.split(",").map(t => t.trim())
+                        : [],
+                    color: form.color || "#999999",
                     start,
-                    end,
-                    tags: form.tags ? form.tags.split(",") : [],
-                    requirements: form.requirements ? form.requirements.split(",") : []
-                }]);
+                    end
+                };
+
+                const { error } = await supabase.from("events").insert([payload]);
+                if (error) throw error;
             }
         });
     };
@@ -546,16 +584,32 @@ window.editEvent = async (id) => {
     openEventModal({
         data,
         onSubmit: async (form) => {
-            const start = new Date(`${form.eventDate}T${form.eventStart}`);
-            const end = new Date(`${form.eventDate}T${form.eventEnd}`);
 
-            await supabase.from("events").update({
-                ...form,
+            const start = new Date(`${form.eventDate}T${form.eventStart}`).toISOString();
+            const end = new Date(`${form.eventDate}T${form.eventEnd}`).toISOString();
+
+            const payload = {
+                title: form.title,
+                location: form.location,
+                description: form.description,
+                info: form.info,
+                requirements: form.requirements
+                    ? form.requirements.split(",").map(r => r.trim())
+                    : [],
+                tags: form.tags
+                    ? form.tags.split(",").map(t => t.trim())
+                    : [],
+                color: form.color,
                 start,
-                end,
-                tags: form.tags ? form.tags.split(",") : [],
-                requirements: form.requirements ? form.requirements.split(",") : []
-            }).eq("id", id);
+                end
+            };
+
+            const { error } = await supabase
+                .from("events")
+                .update(payload)
+                .eq("id", id);
+
+            if (error) throw error;
         }
     });
 };
