@@ -1,3 +1,4 @@
+// admin-dashboard.js
 import { supabase } from './supabase.js';
 import { AuthService } from './auth-service.js';
 
@@ -72,7 +73,12 @@ function initModal() {
         if (!modalOnSubmit) return;
 
         try {
-            const data = Object.fromEntries(new FormData(form).entries());
+            const data = {
+                ...Object.fromEntries(new FormData(form).entries()),
+                eventDate: document.querySelector('[name="eventDate"]')?.value,
+                eventStart: document.querySelector('[name="eventStart"]')?.value,
+                eventEnd: document.querySelector('[name="eventEnd"]')?.value
+            };
             const images = await uploadGallery();
 
             await modalOnSubmit(data, images);
@@ -87,46 +93,93 @@ function initModal() {
     };
 }
 
-function openModal({ title, fields = [], type = "default", onSubmit }) {
+function openModal({ title, type, data = {}, onSubmit }) {
     modalOnSubmit = onSubmit;
     form.innerHTML = "";
     galleryFiles = [];
 
     document.getElementById("modalTitle").innerText = title;
 
-    // INPUTS
+    // RESET SPECIAL UI
+    document.getElementById("eventFields").classList.add("hidden");
+
+    /* =========================
+       FIELD DEFINITIONS
+    ========================= */
+    let fields = [];
+
+    if (type === "blog") {
+        fields = [
+            { name: "content", label: "Inhalt", type: "textarea" }
+        ];
+    }
+
+    if (type === "project") {
+        fields = [
+            { name: "title", label: "Titel" },
+            { name: "description", label: "Kurzbeschreibung" },
+            { name: "fullText", label: "Text", type: "textarea" },
+            { name: "category", label: "Kategorie" },
+            { name: "status", label: "Status" },
+            { name: "cover", label: "Cover URL" },
+            { name: "tags", label: "Tags (comma separated)" }
+        ];
+    }
+
+    if (type === "event") {
+        fields = [
+            { name: "title", label: "Titel" },
+            { name: "location", label: "Ort" },
+            { name: "description", label: "Beschreibung", type: "textarea" },
+            { name: "info", label: "Info" },
+            { name: "requirements", label: "Requirements (comma separated)" },
+            { name: "tags", label: "Tags (comma separated)" },
+            { name: "color", label: "Farbe (#hex)" }
+        ];
+
+        document.getElementById("eventFields").classList.remove("hidden");
+    }
+
+    /* =========================
+       RENDER FIELDS
+    ========================= */
     fields.forEach(f => {
+        const value = data[f.name] || "";
+
         form.innerHTML += `
             <div class="field">
                 <label>${f.label}</label>
-                <input name="${f.name}" value="${f.value || ""}" />
+                ${
+                    f.type === "textarea"
+                        ? `<textarea name="${f.name}">${value}</textarea>`
+                        : `<input name="${f.name}" value="${value}" />`
+                }
             </div>
         `;
     });
 
-    // 🔥 NEU: URL INPUT
+    /* =========================
+       IMAGE INPUT (blog + project)
+    ========================= */
     if (type === "blog" || type === "project") {
         form.innerHTML += `
             <div class="field">
-                <label>Bild-URL hinzufügen</label>
+                <label>Bild-URL</label>
                 <input id="imageUrlInput" placeholder="https://..." />
                 <button type="button" id="addImageUrl">Hinzufügen</button>
             </div>
         `;
-    }
 
-    setTimeout(() => {
-        const btn = document.getElementById("addImageUrl");
-        if (btn) {
-            btn.onclick = () => {
+        setTimeout(() => {
+            document.getElementById("addImageUrl").onclick = () => {
                 const val = document.getElementById("imageUrlInput").value;
                 if (val) {
                     galleryFiles.push(val);
                     renderGallery();
                 }
             };
-        }
-    }, 0);
+        });
+    }
 
     modal.classList.remove("hidden");
 }
@@ -254,9 +307,20 @@ async function renderPosts(container) {
             type: "blog",
             fields: [{ name: "content", label: "Inhalt" }],
             onSubmit: async (data, images) => {
+
+                const { data: user } = await supabase.auth.getUser();
+
+                const { data: profile } = await supabase
+                    .from("profiles")
+                    .select("*")
+                    .eq("id", user.user.id)
+                    .single();
+
                 const { error } = await supabase.from("blog").insert([{
                     content: data.content || "",
-                    images
+                    images,
+                    author: profile.last_name,
+                    avatar: `./avatars/${profile.last_name}.png`
                 }]);
 
                 if (error) throw error;
@@ -315,8 +379,15 @@ async function renderProjects(container) {
             ],
             onSubmit: async (form, images) => {
                 await supabase.from("projects").insert([{
-                    ...form,
-                    gallery: images
+                    title: form.title,
+                    description: form.description,
+                    fullText: form.fullText,
+                    category: form.category,
+                    status: form.status,
+                    cover: form.cover,
+                    gallery: images,
+                    tags: form.tags ? form.tags.split(",") : [],
+                    date: new Date()
                 }]);
             }
         });
@@ -353,7 +424,22 @@ async function renderEvents(container) {
                 { name: "location", label: "Ort" }
             ],
             onSubmit: async (form) => {
-                await supabase.from("events").insert([form]);
+
+                const date = form.eventDate;
+                const start = `${date}T${form.eventStart}`;
+                const end = `${date}T${form.eventEnd}`;
+
+                await supabase.from("events").insert([{
+                    title: form.title,
+                    location: form.location,
+                    description: form.description,
+                    info: form.info,
+                    requirements: form.requirements ? form.requirements.split(",") : [],
+                    tags: form.tags ? form.tags.split(",") : [],
+                    color: form.color,
+                    start,
+                    end
+                }]);
             }
         });
     };
