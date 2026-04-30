@@ -17,6 +17,8 @@ let currentView = "feed";
 let selectedPostId = null;
 let allPosts = [];
 
+let cachedLikes_forPost = 0;
+
 let commentsChannel = null;
 let likesChannel = null;
 
@@ -52,9 +54,12 @@ function truncateText(text, max = 200) {
   return text.slice(0, max) + `<span class="more"> …mehr</span>`;
 }
 
-function createPostCard(post) {
+async function createPostCard(post) {
   const el = document.createElement("div");
   el.className = "post";
+
+  let postId = post.id;
+  const likeCount = await getLikesCount(postId, post.likes);
 
   // Handle images - content.images might be an array or undefined
   //const firstImage = post.images && post.images[0] ? post.images[0] : '';
@@ -75,7 +80,7 @@ function createPostCard(post) {
     </div>
 
     <div class="post-actions">
-      ❤️ ${post.likes} 💬 0
+      ❤️ ${likeCount} 💬 0
     </div>
   `;
 
@@ -109,7 +114,8 @@ async function renderFeed() {
 async function renderDetail(postId) {
   try {
     const post = allPosts.find(p => p.id === postId) || await getBlogById(postId);
-    const likeCount = await getLikesCount(postId);
+    const likeCount = await getLikesCount(postId, post.likes);
+    cachedLikes_forPost = post.likes;
     loadComments(postId);
     subscribeComments(postId);
     subscribeLikes(postId);
@@ -293,7 +299,7 @@ function subscribeLikes(postId) {
         if (!row || row.post_id !== postId) return;
 
         // optional: nur UI update, kein DB call
-        const likeCount = await getLikesCount(postId);
+        const likeCount = await getLikesCount(postId, cachedLikes_forPost);
 
         const btn = document.getElementById("likeBtn");
         if (btn) btn.innerHTML = `❤️ ${likeCount}`;

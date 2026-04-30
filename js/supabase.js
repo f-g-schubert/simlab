@@ -150,23 +150,26 @@ export async function addComment(postId, text, user) {
   return data;
 }
 
-export async function getLikesCount(postId) {
+export async function getLikesCount(postId, baseLikes = 0) {
+
   const { data, error } = await supabase
     .from("likes")
     .select("user_id, guest_id")
-    .eq("post_id", postId);
+    .eq("post_id", String(postId));
 
   if (error) throw error;
 
-  const uniqueUsers = new Set();
-  const uniqueGuests = new Set();
+  const unique = new Set();
 
   data.forEach(like => {
-    if (like.user_id) uniqueUsers.add(like.user_id);
-    if (like.guest_id) uniqueGuests.add(like.guest_id);
+    if (like.user_id) {
+      unique.add(`user-${like.user_id}`);
+    } else if (like.guest_id) {
+      unique.add(`guest-${like.guest_id}`);
+    }
   });
 
-  return uniqueUsers.size + uniqueGuests.size;
+  return baseLikes + unique.size;
 }
 
 // ============== Projects Functions ==============
