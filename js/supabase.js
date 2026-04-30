@@ -83,50 +83,43 @@ export async function getBlogById(id) {
 }
 
 export async function likeBlogPost(postId, userId, guestId) {
-  // Prüfen ob Like existiert
-  let query = supabase
+  const identifier = userId ? { user_id: userId } : { guest_id: guestId };
+
+  // check existing
+  const { data: existing, error: checkError } = await supabase
     .from("likes")
     .select("id")
-    .eq("post_id", postId);
+    .eq("post_id", postId)
+    .match(identifier)
+    .maybeSingle();
 
-  if (userId) {
-    query = query.eq("user_id", userId);
-  } else {
-    query = query.eq("guest_id", guestId);
-  }
+  if (checkError) throw checkError;
 
-  const { data: existing, error } = await query;
-
-  if (error) throw error;
-
-  // 👉 Toggle
-  if (existing.length > 0) {
-    // UNLIKE
-    const { error: delError } = await supabase
+  // TOGGLE
+  if (existing) {
+    const { error } = await supabase
       .from("likes")
       .delete()
-      .eq("post_id", postId)
-      .match(userId ? { user_id: userId } : { guest_id: guestId });
+      .eq("id", existing.id);
 
-    if (delError) throw delError;
+    if (error) throw error;
 
     return { liked: false };
-  } else {
-    // LIKE
-    const { error: insertError } = await supabase
-      .from("likes")
-      .insert([
-        {
-          post_id: postId,
-          user_id: userId,
-          guest_id: guestId
-        }
-      ]);
-
-    if (insertError) throw insertError;
-
-    return { liked: true };
   }
+
+  const { error } = await supabase
+    .from("likes")
+    .insert([
+      {
+        post_id: postId,
+        ...identifier
+      }
+    ]);
+
+  // 👉 IGNORE duplicate silently
+  if (error && error.code !== "23505") throw error;
+
+  return { liked: true };
 }
 
 // COMMENTS

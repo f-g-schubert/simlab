@@ -22,9 +22,16 @@ let likesChannel = null;
 
 function switchView(view, postId = null) {
 
-  // cleanup realtime
-  if (commentsChannel) supabase.removeChannel(commentsChannel);
-  if (likesChannel) supabase.removeChannel(likesChannel);
+  // 👉 HARD CLEANUP ALL SUBSCRIPTIONS
+  if (commentsChannel) {
+    supabase.removeChannel(commentsChannel);
+    commentsChannel = null;
+  }
+
+  if (likesChannel) {
+    supabase.removeChannel(likesChannel);
+    likesChannel = null;
+  }
 
   currentView = view;
   selectedPostId = postId;
@@ -167,10 +174,13 @@ async function renderDetail(postId) {
             localStorage.setItem("guest_id", guestId);
           }
 
-          await likeBlogPost(postId, user?.id, guestId);
-
-          // KEIN renderDetail() mehr!
-          // Realtime übernimmt Update
+          try {
+            await likeBlogPost(postId, user?.id, guestId);
+          } catch (error) {
+            if (error.code !== "23505") {
+              console.error("Like Fehler:", error);
+            }
+          }
 
         } catch (error) {
           console.error("Like Fehler:", error);
@@ -233,42 +243,58 @@ renderFeed();
 
 /* SUBSCRIPTIONS */
 function subscribeComments(postId) {
+  // cleanup alte subscription
   if (commentsChannel) {
     supabase.removeChannel(commentsChannel);
+    commentsChannel = null;
   }
 
   commentsChannel = supabase
-    .channel("comments-channel-" + postId)
+    .channel("comments-global-channel")
     .on(
       "postgres_changes",
       {
         event: "*",
         schema: "public",
-        table: "comments",
-        filter: `post_id=eq.${postId}`
+        table: "comments"
       },
-      () => loadComments(postId)
+      (payload) => {
+        const row = payload.new || payload.old;
+
+        // 👉 MANUAL FILTER (WICHTIG)
+        if (row?.post_id === postId) {
+          loadComments(postId);
+        }
+      }
     )
     .subscribe();
 }
 
 function subscribeLikes(postId) {
+  // cleanup alte subscription
   if (likesChannel) {
     supabase.removeChannel(likesChannel);
+    likesChannel = null;
   }
 
   likesChannel = supabase
-    .channel("likes-channel-" + postId)
+    .channel("likes-global-channel")
     .on(
       "postgres_changes",
       {
         event: "*",
         schema: "public",
-        table: "likes",
-        filter: `post_id=eq.${postId}`
+        table: "likes"
       },
-      async () => {
+      async (payload) => {
+        const row = payload.new || payload.old;
+
+        // 👉 MANUAL FILTER (WICHTIG)
+        if (!row || row.post_id !== postId) return;
+
+        // optional: nur UI update, kein DB call
         const likeCount = await getLikesCount(postId);
+
         const btn = document.getElementById("likeBtn");
         if (btn) btn.innerHTML = `❤️ ${likeCount}`;
       }
