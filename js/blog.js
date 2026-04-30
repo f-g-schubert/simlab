@@ -54,12 +54,9 @@ function truncateText(text, max = 200) {
   return text.slice(0, max) + `<span class="more"> …mehr</span>`;
 }
 
-async function createPostCard(post) {
+async function createPostCard(post, likeCount) {
   const el = document.createElement("div");
   el.className = "post";
-
-  let postId = post.id;
-  const likeCount = await getLikesCount(postId, post.likes);
 
   // Handle images - content.images might be an array or undefined
   //const firstImage = post.images && post.images[0] ? post.images[0] : '';
@@ -102,9 +99,10 @@ async function renderFeed() {
     }
 
     allPosts = await getBlog();
-    allPosts.forEach(post => {
-      feedView.appendChild(createPostCard(post));
-    });
+    for (const post of allPosts) {
+      const likeCount = await getLikesCount(post.id, post.likes || 0);
+      feedView.appendChild(createPostCard(post, likeCount));
+    }
   } catch (error) {
     console.error("Fehler beim Laden des Feeds:", error);
     feedView.innerHTML = "<p>Fehler beim Laden der Blog-Beiträge</p>";
