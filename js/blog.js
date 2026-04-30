@@ -95,6 +95,9 @@ async function renderDetail(postId) {
   try {
     const post = allPosts.find(p => p.id === postId) || await getBlogById(postId);
     const likeCount = await getLikesCount(postId);
+    loadComments(postId);
+    subscribeComments(postId);
+    subscribeLikes(postId);
     
     if (!post) {
       detailView.innerHTML = "<p>Beitrag nicht gefunden</p>";
@@ -155,7 +158,6 @@ async function renderDetail(postId) {
           }
           
           await likeBlogPost(postId, user?.id, guestId);
-          await likeBlogPost(postId, user?.id, guestId);
 
           // neu laden statt +1 lokal
           renderDetail(postId);
@@ -163,6 +165,25 @@ async function renderDetail(postId) {
           console.error("Fehler beim Speichern des Likes:", error);
         }
       });
+    
+    setTimeout(() => {
+      const sendBtn = document.getElementById("sendComment");
+      const textEl = document.getElementById("commentText");
+
+      if (!sendBtn) return;
+
+      sendBtn.addEventListener("click", async () => {
+        const text = textEl.value.trim();
+        if (!text) return;
+
+        const { data: { user } } = await supabase.auth.getUser();
+
+        await addComment(postId, text, user);
+
+        textEl.value = "";
+        loadComments(postId);
+      });
+    }, 0);
 
   } catch (error) {
     console.error("Fehler beim Laden des Beitrags:", error);
@@ -170,10 +191,12 @@ async function renderDetail(postId) {
   }
 }
 
-async function loadComments() {
+async function loadComments(postId) {
   const comments = await getComments(postId);
 
   const list = document.getElementById("commentList");
+  if (!list) return;
+
   list.innerHTML = "";
 
   if (!comments.length) {
@@ -193,23 +216,43 @@ async function loadComments() {
   });
 }
 
-document.getElementById("sendComment")
-  .addEventListener("click", async () => {
-    const text = document.getElementById("commentText").value.trim();
-    if (!text) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-
-    try {
-      await addComment(postId, text, user);
-      document.getElementById("commentText").value = "";
-      loadComments();
-    } catch (err) {
-      console.error(err);
-    }
-  });
-
-loadComments();
-
 // Initialize
 renderFeed();
+
+
+/* SUBSCRIPTIONS */
+function subscribeComments(postId) {
+  return supabase
+    .channel("comments-channel")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "comments",
+        filter: `post_id=eq.${postId}`
+      },
+      () => loadComments(postId)
+    )
+    .subscribe();
+}
+
+function subscribeLikes(postId) {
+  return supabase
+    .channel("likes-channel")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "likes",
+        filter: `post_id=eq.${postId}`
+      },
+      async () => {
+        const likeCount = await getLikesCount(postId);
+        const btn = document.getElementById("likeBtn");
+        if (btn) btn.innerHTML = `❤️ ${likeCount}`;
+      }
+    )
+    .subscribe();
+}
