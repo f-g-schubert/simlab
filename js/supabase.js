@@ -104,6 +104,44 @@ export async function likeBlogPost(postId, userId = null, guestId = null) {
     }
 }
 
+// COMMENTS
+export async function getComments(postId) {
+  const { data, error } = await supabase
+    .from("comments")
+    .select("*")
+    .eq("post_id", postId)
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function addComment(postId, text, user) {
+  const { data, error } = await supabase
+    .from("comments")
+    .insert([
+      {
+        post_id: postId,
+        text,
+        user_id: user?.id || null,
+        user_name: user?.email || "Gast"
+      }
+    ]);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getLikesCount(postId) {
+  const { count, error } = await supabase
+    .from("likes")
+    .select("*", { count: "exact", head: true })
+    .eq("post_id", postId);
+
+  if (error) throw error;
+  return count || 0;
+}
+
 // ============== Projects Functions ==============
 export async function getProjects() {
     try {

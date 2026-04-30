@@ -1,5 +1,14 @@
 // blog.js
-import { getBlog, getBlogById, likeBlogPost, supabase, testConnection } from "./supabase.js";
+import {
+  getBlog,
+  getBlogById,
+  likeBlogPost,
+  supabase,
+  testConnection,
+  getComments,
+  addComment,
+  getLikesCount
+} from "./supabase.js";
 
 const feedView = document.getElementById("feedView");
 const detailView = document.getElementById("detailView");
@@ -85,6 +94,7 @@ async function renderFeed() {
 async function renderDetail(postId) {
   try {
     const post = allPosts.find(p => p.id === postId) || await getBlogById(postId);
+    const likeCount = await getLikesCount(postId);
     
     if (!post) {
       detailView.innerHTML = "<p>Beitrag nicht gefunden</p>";
@@ -115,16 +125,18 @@ async function renderDetail(postId) {
         </div>
 
         <div class="post-actions">
-          <button id="likeBtn" class="like-btn">❤️ ${post.likes}</button>
+          <button id="likeBtn" class="like-btn">❤️ ${likeCount}</button>
         </div>
 
         <div class="comments">
           <h3>Kommentare</h3>
 
-          <div id="commentList">
-            <p>Kommentare werden bald unterstützt</p>
-          </div>
+          <div id="commentList"></div>
 
+          <div class="comment-input">
+            <textarea id="commentText" placeholder="Kommentar schreiben..."></textarea>
+            <button id="sendComment">Senden</button>
+          </div>
         </div>
       </div>
     `;
@@ -143,7 +155,9 @@ async function renderDetail(postId) {
           }
           
           await likeBlogPost(postId, user?.id, guestId);
-          post.likes += 1;
+          await likeBlogPost(postId, user?.id, guestId);
+
+          // neu laden statt +1 lokal
           renderDetail(postId);
         } catch (error) {
           console.error("Fehler beim Speichern des Likes:", error);
@@ -155,6 +169,47 @@ async function renderDetail(postId) {
     detailView.innerHTML = "<p>Fehler beim Laden des Beitrags</p>";
   }
 }
+
+async function loadComments() {
+  const comments = await getComments(postId);
+
+  const list = document.getElementById("commentList");
+  list.innerHTML = "";
+
+  if (!comments.length) {
+    list.innerHTML = "<p>Noch keine Kommentare</p>";
+    return;
+  }
+
+  comments.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "comment";
+    div.innerHTML = `
+      <strong>${c.user_name}</strong>
+      <p>${c.text}</p>
+      <small>${new Date(c.created_at).toLocaleString()}</small>
+    `;
+    list.appendChild(div);
+  });
+}
+
+document.getElementById("sendComment")
+  .addEventListener("click", async () => {
+    const text = document.getElementById("commentText").value.trim();
+    if (!text) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    try {
+      await addComment(postId, text, user);
+      document.getElementById("commentText").value = "";
+      loadComments();
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+loadComments();
 
 // Initialize
 renderFeed();
