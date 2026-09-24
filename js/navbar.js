@@ -18,16 +18,17 @@ class NavBar extends HTMLElement {
 
                     <div id="brand" class="brand" onclick="window.location.href = './';">
                         <img src="images/logo.png" class="logo">
-                        <span class="title">Meine Seite</span>
+                        <span class="title">SimLab's Home Page</span>
                     </div>
                 </div>
 
                 <nav id="navMenu">
                     <ul>
+                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="simlab-symposium.html">Symposium 2027</a>
                         <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="blog.html">Blog</a>
-                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="projekte.html">Projekte</a>
-                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="termine-und-veranstaltungen.html">Termine und Veranstaltungen</a>
-                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="ueber-uns.html">Über uns</a>
+                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="projekte.html">Projects</a>
+                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="termine-und-veranstaltungen.html">Events</a>
+                        <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="ueber-uns.html">About Us</a>
                         <a style="border: 1px solid rgba(255,255,255,0.15);" class="glass-button" href="impressum.html">Impressum</a>
 
                         <div id="userArea" class="user-area">

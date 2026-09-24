@@ -1,0 +1,213 @@
+ <!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The SimLab Symposium for 3D-Printing in Medicine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F3EC; --bg-alt:#FBFAF6; --ink:#161F1C; --muted:#3C453F; --faint:#6B7269;
+    --line:#DFD9C8; --teal:#0B4F4A; --teal-dark:#0E403C; --clay:#C1622C;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);font-family:'IBM Plex Sans',system-ui,sans-serif;color:var(--ink);}
+  a{color:inherit;text-decoration:none;}
+  .wrap{width:100%;max-width:1280px;margin:0 auto;}
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--clay);margin-bottom:16px;}
+  h1,h2{font-family:'Fraunces',serif;font-weight:600;margin:0;}
+  .btn{display:inline-block;padding:16px 32px;border-radius:2px;font-weight:600;font-size:15px;}
+  .btn-primary{background:var(--teal);color:var(--bg);}
+  .btn-primary:hover{background:var(--teal-dark);}
+  .btn-ghost{border:1.5px solid var(--ink);}
+  .btn-ghost:hover{background:var(--ink);color:var(--bg);}
+  .section{padding:96px 40px;border-bottom:1px solid var(--line);}
+  .card{border:1.5px solid var(--line);border-radius:4px;padding:32px;background:var(--bg-alt);}
+  .card:hover{border-color:var(--teal);}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;}
+  nav a:hover{color:var(--clay);}
+  .date-row{display:flex;gap:32px;padding:20px 0;border-top:1px solid var(--line);align-items:baseline;flex-wrap:wrap;}
+  .date-row .label{width:200px;flex-shrink:0;font-weight:600;font-size:15px;color:var(--teal);}
+  @media (max-width:800px){
+    .grid3,.grid2{grid-template-columns:1fr;}
+    h1{font-size:40px !important;}
+    .section{padding:64px 20px;}
+    nav .links{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:10;background:rgba(246,243,236,0.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);">
+  <nav class="wrap" style="display:flex;align-items:center;justify-content:space-between;padding:20px 40px;">
+    <div style="font-family:'Fraunces',serif;font-weight:600;font-size:20px;">SimLab</div>
+    <div class="links" style="display:flex;gap:32px;align-items:center;font-size:14px;font-weight:500;">
+      <a href="#programme">Programme</a>
+      <a href="#abstracts">Call for Abstracts</a>
+      <a href="#publication">Publication</a>
+      <a href="#dates">Key Dates</a>
+      <a href="#venue">Venue</a>
+      <a href="https://tally.so/r/vGRpgl" style="background:var(--teal);color:var(--bg);padding:10px 20px;border-radius:2px;font-weight:600;">Register</a>
+    </div>
+  </nav>
+</div>
+
+<div class="wrap">
+
+  <header class="section" style="padding-top:96px;padding-bottom:72px;">
+    <div class="eyebrow">Universitätsklinikum Hamburg-Eppendorf &middot; SimLab &ndash; Students for Surgery</div>
+    <h1 style="font-size:64px;line-height:1.05;margin-bottom:28px;max-width:900px;">The SimLab &mdash; Symposium for 3D-Printing in Medicine</h1>
+    <p style="font-size:19px;line-height:1.6;max-width:640px;color:var(--muted);margin:0 0 40px 0;">Three pillars &mdash; Teaching, Basic Science, and Clinical Applications &mdash; united by one thread: 3D printing and simulation in medicine. Talks, a poster session, and a scientific community coming together for one day at the UKE.</p>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:40px;">
+      <a href="https://tally.so/r/vGRpgl" class="btn btn-primary">Register now</a>
+      <a href="#abstracts" class="btn btn-ghost">Submit an abstract</a>
+    </div>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;padding-top:32px;border-top:1px solid var(--line);">
+      <div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);margin-bottom:6px;">Date</div>
+        <div style="font-size:17px;font-weight:600;">Tuesday, 2 February 2027</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);margin-bottom:6px;">Location</div>
+        <div style="font-size:17px;font-weight:600;">UKE Hamburg</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);margin-bottom:6px;">Format</div>
+        <div style="font-size:17px;font-weight:600;">Talks &amp; Poster Session</div>
+      </div>
+    </div>
+  </header>
+
+  <div style="background:var(--ink);color:var(--bg);padding:28px 40px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;background:var(--clay);padding:6px 12px;border-radius:2px;">Monday, 1 February 2027</span>
+    <span style="font-size:16px;">SimLab &ndash; Awareness Day for 3D-Printing in Medicine takes place the day before the symposium.</span>
+  </div>
+
+  <section id="programme" class="section">
+    <div class="eyebrow">Programme</div>
+    <h2 style="font-size:36px;margin-bottom:16px;max-width:640px;">Three pillars, one thread</h2>
+    <p style="font-size:16px;line-height:1.6;color:var(--muted);max-width:640px;margin:0 0 56px 0;">Every talk and poster connects back to 3D printing and simulation &mdash; from how we teach it, to how we research it, to how we apply it at the bedside.</p>
+    <div class="grid3">
+      <div class="card">
+        <div style="font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;">Pillar I</div>
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin-bottom:12px;">Teaching</div>
+        <div style="font-size:15px;line-height:1.6;color:var(--muted);">Teaching innovations that use 3D-printed and simulated models to build surgical and clinical skill &mdash; from curricula to hands-on training formats.</div>
+      </div>
+      <div class="card">
+        <div style="font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;">Pillar II</div>
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin-bottom:12px;">Basic Science</div>
+        <div style="font-size:15px;line-height:1.6;color:var(--muted);">Original research on materials, CAD design, point-of-care manufacturing, and the regulatory and methodological questions behind medical 3D printing.</div>
+      </div>
+      <div class="card">
+        <div style="font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;">Pillar III</div>
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin-bottom:12px;">Clinical Applications</div>
+        <div style="font-size:15px;line-height:1.6;color:var(--muted);">Clinical applications and case series &mdash; patient-specific models, pre-surgical planning, and point-of-care manufacturing in daily practice.</div>
+      </div>
+    </div>
+    <div style="margin-top:24px;border:1.5px dashed var(--clay);border-radius:4px;padding:24px 32px;background:var(--bg-alt);">
+      <div style="font-weight:600;font-size:15px;margin-bottom:6px;">Poster Session</div>
+      <div style="font-size:15px;line-height:1.6;color:var(--muted);">A dedicated poster session runs alongside the talks &mdash; open to submissions from all three pillars. The final programme with speakers and timings will be published here on 31 December 2026.</div>
+    </div>
+  </section>
+
+  <section id="abstracts" class="section" style="background:var(--bg-alt);">
+    <div class="eyebrow">Call for Abstracts</div>
+    <h2 style="font-size:36px;margin-bottom:40px;max-width:640px;">Submit your work</h2>
+    <div class="grid2">
+      <div>
+        <div style="font-weight:600;font-size:16px;margin-bottom:16px;">Requirements at a glance</div>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:15px;line-height:1.6;color:var(--muted);">
+          <div>&middot; Clear relevance to 3D printing and/or simulation in medicine, assigned to one of the three pillars</div>
+          <div>&middot; Structured abstract, max. 300 words &mdash; Background, Methods, Results, Conclusion</div>
+          <div>&middot; Language: English (preferred, in case of eventual supplement publication)</div>
+          <div>&middot; Ethics approval number where applicable; conflict of interest statement</div>
+          <div>&middot; At least one author registered for the symposium</div>
+          <div>&middot; Indicate preferred format: talk or poster</div>
+          <div>&middot; All submissions are reviewed by our scientific committee, covering all three pillars</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <div style="font-weight:600;font-size:16px;margin-bottom:16px;">How to submit</div>
+          <div style="font-size:15px;line-height:1.6;color:var(--muted);margin-bottom:24px;">Abstracts are submitted by email to <strong>simlabhamburg@gmail.com</strong>. Please use the subject line <strong>"Abstract Submission &ndash; SimLab Symposium 2027"</strong> and indicate which of the three pillars (Teaching, Basic Science, or Clinical Applications) your abstract belongs to. Each submission is reviewed by at least two members of our scientific committee before acceptance. Accepted abstracts will be compiled into a citable abstract volume &mdash; see <a href="#publication" style="text-decoration:underline;">Publication</a> for details.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="publication" class="section">
+    <div class="grid2" style="align-items:start;">
+      <div>
+        <div class="eyebrow">Publication</div>
+        <h2 style="font-size:36px;margin-bottom:20px;">Your work, published</h2>
+        <p style="font-size:16px;line-height:1.7;color:var(--muted);margin:0;">We are finalising a partnership to publish accepted abstracts as a citable, indexed abstract volume with a DOI. We'll confirm the details here as soon as this is finalised.</p>
+      </div>
+      <div class="card">
+        <div style="font-weight:600;font-size:15px;margin-bottom:12px;">Why it matters</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.6;color:var(--muted);">
+          <div>&middot; Citable, permanent, indexed publication record</div>
+          <div>&middot; Peer-reviewed prior to acceptance</div>
+          <div>&middot; Fits naturally alongside SimLab's existing focus on 3D printing in medical education and research</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dates" class="section" style="background:var(--bg-alt);">
+    <div class="eyebrow">Key Dates</div>
+    <h2 style="font-size:36px;margin-bottom:48px;">Mark your calendar</h2>
+    <div>
+      <div class="date-row"><div class="label">15 November 2026</div><div style="font-size:15px;color:var(--muted);">Registration deadline for presenting authors</div></div>
+      <div class="date-row"><div class="label">30 November 2026</div><div style="font-size:15px;color:var(--muted);">Abstract submission closes</div></div>
+      <div class="date-row"><div class="label">31 December 2026</div><div style="font-size:15px;color:var(--muted);">Notification of acceptance</div></div>
+      <div class="date-row"><div class="label">14 January 2027</div><div style="font-size:15px;color:var(--muted);">Final review completed</div></div>
+      <div class="date-row"><div class="label">21 January 2027</div><div style="font-size:15px;color:var(--muted);">Abstract finalisation for submission</div></div>
+      <div class="date-row"><div class="label" style="color:var(--ink);">1 February 2027</div><div style="font-size:15px;color:var(--muted);">SimLab &ndash; Awareness Day for 3D-Printing in Medicine</div></div>
+      <div class="date-row" style="border-bottom:1px solid var(--line);"><div class="label" style="color:var(--ink);font-weight:700;">2 February 2027</div><div style="font-size:15px;font-weight:600;">The SimLab Symposium for 3D-Printing in Medicine</div></div>
+    </div>
+  </section>
+
+  <section id="venue" class="section">
+    <div class="grid2">
+      <div>
+        <div class="eyebrow">Venue</div>
+        <h2 style="font-size:32px;margin-bottom:16px;">Universitätsklinikum Hamburg-Eppendorf</h2>
+        <p style="font-size:15px;line-height:1.7;color:var(--muted);margin:0 0 8px 0;">Erika-Haus W29<br>Martinistraße 52<br>20246 Hamburg</p>
+        <p style="font-size:15px;line-height:1.7;color:var(--muted);margin:0;">Take the bus to the UKE main entrance (Hauptzugang). From there, walk to the roundabout and follow the signs to <strong>W29</strong> &mdash; about 5 minutes on foot.</p>
+      </div>
+      <div id="register" class="card" style="border-color:var(--teal);">
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin-bottom:12px;">Registration</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--muted);margin:0 0 24px 0;">Registration is free for the Awareness Day and the Symposium. Places are limited &mdash; early registration is recommended.</p>
+        <a href="https://tally.so/r/vGRpgl" class="btn btn-primary">Register now</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:56px 40px;">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:32px;margin-bottom:40px;">
+      <div style="max-width:360px;">
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin-bottom:12px;">SimLab &ndash; Students for Surgery</div>
+        <div style="font-size:14px;line-height:1.6;color:var(--faint);">A student-led 3D printing and simulation initiative at the Universitätsklinikum Hamburg-Eppendorf.</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);margin-bottom:12px;">Contact</div>
+        <div style="font-size:14px;line-height:1.8;">
+          <div><a href="mailto:simlabhamburg@gmail.com" style="text-decoration:underline;">simlabhamburg@gmail.com</a></div>
+          <div>UKE Hamburg</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);margin-bottom:12px;">Network Partners</div>
+        <div style="font-size:14px;line-height:1.6;color:var(--muted);max-width:220px;">To be announced. Interested in partnering? Reach out to <a href="mailto:simlabhamburg@gmail.com" style="text-decoration:underline;">simlabhamburg@gmail.com</a>.</div>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--line);padding-top:24px;font-size:13px;color:var(--faint);">&copy; 2027 SimLab &ndash; Students for Surgery, UKE Hamburg</div>
+    <div style="padding-top:12px;font-size:12px;color:var(--faint);max-width:640px;">This page loads fonts from Google Fonts, which may involve your browser connecting to Google servers. No other tracking or cookies are used on this page. Registration data is collected via Tally (tally.so).</div>
+  </footer>
+
+</div>
+</body>
+</html>

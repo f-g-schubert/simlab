@@ -30,11 +30,11 @@
 <main>
 
 <carousel-element
-    images='["./images/1.jpg","./images/2.jpg","./images/3.jpg"]'
+    images='["./images/12.jpg","./images/9.jpg","./images/5.jpg"]'
     overlays='[
         {
             "image": 0,
-            "html": "<div class=\"tag\">Hotspot A</div>",
+            "html": "<div class=\"tag\">Skillslab</div>",
             "x": 30,
             "y": 40
         }
@@ -48,28 +48,28 @@
 <section class="hero glass">
     <h1>Dashboard</h1>
     <br>
-    <p style="color: darkgray;">Aktuelles rund um SimLab</p>
+    <p style="color: darkgray;">SimLab at a glance</p>
 </section>
 
 <!-- DASHBOARD -->
 <section class="content">
     <!-- EREIGNISSE UND TERMINE -->
     <div class="glass card" id="eventsPreview" onclick="window.location.href = './termine-und-veranstaltungen.html';">
-        <h2>📅 Nächste Termine</h2>
+        <h2>📅 Next Events</h2>
         <br>
         <div class="card-content"></div>
     </div>
 
     <!-- BLOG -->
     <div class="glass card" id="blogPreview" onclick="window.location.href = './blog.html';">
-        <h2>📝 Neueste Posts</h2>
+        <h2>📝 Most Recent Posts</h2>
         <br>
         <div class="card-content"></div>
     </div>
 
     <!-- PROJEKTE -->
     <div class="glass card" id="projectsPreview" onclick="window.location.href = './projekte.html';">
-        <h2>🚀 Neueste Projekte</h2>
+        <h2>🚀 Most Recent Projects</h2>
         <br>
         <div class="card-content"></div>
     </div>
@@ -79,7 +79,7 @@
 </section>
 
 <reveal-container-element
-    images="./images/1.jpg,./images/2.jpg,./images/3.jpg"
+    images="./images/12.jpg,./images/9.jpg,./images/5.jpg"
     interval="3000"
     angle="30"
     bar-width="20"
@@ -90,6 +90,7 @@
 
 <section class="parallax" data-speed="0.5"></section>
 
+<!--
 <scroll-video-element
     video-src="./videos/SimLab keycard v6.mp4"
     items='[
@@ -125,12 +126,13 @@
         }
     ]'>
 </scroll-video-timeline-element>
+-->
 
 <timeline-story-element
     story-config='{
         "scrollLength": 2000,
         "useImage": true,
-        "image": "./images/1.jpg",
+        "image": "./images/12.jpg",
         "parallax": {
             "enabled": true,
             "speed": 0.4,
@@ -144,7 +146,7 @@
         },
         "items": [
             {
-                "html": "<h2>Startpunkt</h2>",
+                "html": "<h2>Laparoscopic Training</h2>",
                 "start": 0.01,
                 "end": 1,
                 "marker": {
@@ -161,7 +163,7 @@
                 "effect": "fade-up"
             },
             {
-                "html": "<h2>Unterpunkt</h2>",
+                "html": "<h2>Sewing Training and more</h2>",
                 "start": 0.5,
                 "end": 1,
                 "marker": {
@@ -181,6 +183,7 @@
     }'
 ></timeline-story-element>
 
+<!--
 <div class="feature">
     <div class="icon">✓</div>
     <div>
@@ -199,46 +202,35 @@
     <li>Modernes Design</li>
     <li>Responsive</li>
 </ul>
+-->
 
 <div class="card">
-    <h3>Premium Feature</h3>
-    <p>Beschreibung...</p>
+    <h3>Publication</h3>
+    <p>Simlab is currently finalising a partnership to publish accepted abstracts as a citable, indexed abstract volume with a DOI. We'll confirm the details here as soon as this is finalised.</p>
 </div>
 
 <section class="feature-grid">
     <div class="glass card">
-        <h3>Performance</h3>
-        <p>Schnelle Ladezeiten</p>
+        <h3>Teaching</h3>
+        <p>Teaching innovations that use 3D-printed and simulated models to build surgical and clinical skill — from curricula to hands-on training formats.</p>
     </div>
     <div class="glass card">
-        <h3>Sicherheit</h3>
-        <p>Moderne Authentifizierung</p>
+        <h3>Basic Science</h3>
+        <p>Original research on materials, CAD design, point-of-care manufacturing, and the regulatory and methodological questions behind medical 3D printing.</p>
     </div>
     <div class="glass card">
-        <h3>Skalierbarkeit</h3>
-        <p>Bereit für Wachstum</p>
+        <h3>Clinical Applications</h3>
+        <p>Clinical applications and case series — patient-specific models, pre-surgical planning, and point-of-care manufacturing in daily practice.</p>
     </div>
 </section>
-
-<glass-media-section
-    type="video"
-    src="./videos/SimLab keycard v6.mp4"
-    title="Unsere Technologie"
-    text="Innovative Lösungen für moderne Webanwendungen."
-></glass-media-section>
 
 <glass-media-section
     type="image"
-    src="./images/1.jpg"
-    title="Design trifft Funktion"
-    text="Klare Strukturen und hochwertige UI."
+    src="./images/12.jpg"
+    title="Skillslab"
+    text="Skills training for skills that matter in surgery - peer to peer."
     reverse
 ></glass-media-section>
-
-<section class="cta glass">
-    <h2>Bereit zu starten?</h2>
-    <button>Jetzt loslegen</button>
-</section>
 
 </main>
 
@@ -260,7 +252,8 @@
             {"label":"Login","href":"auth-service.html"},
             {"label":"Blog","href":"blog.html"},
             {"label":"Termine","href":"termine-und-veranstaltungen.html"},
-            {"label":"Projekte","href":"projekte.html"}
+            {"label":"Projekte","href":"projekte.html"},
+            {"label":"SimLab Symposium 2027","href":"simlab-symposium.html"}
         ]},
         {"title":"Legal","items":[
             {"label":"Impressum","href":"impressum.html"},
