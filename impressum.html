@@ -24,62 +24,44 @@
 
 <main>
 
+<!--
+    TODO (intern, vor Veröffentlichung klären):
+    - Die Platzhalter [Vorname Nachname] und [Adresse] müssen noch ersetzt werden.
+    - Der Gruppenname allein reicht nicht: Eine Studierendengruppe ist keine eigene
+      Rechtsperson. Nach § 5 DDG bzw. § 18 MStV muss eine natürliche Person mit Namen
+      und ladungsfähiger Anschrift (kein Postfach) genannt werden.
+    - Die hier genannte Einzelperson ist persönlich haftbar und Ansprechpartner für
+      Abmahnungen (z. B. Bildrechte), für Inhalte anderer (Blog, Kommentare) sowie
+      Verantwortlicher nach DSGVO (Auskunfts-/Löschanfragen zu Nutzerkonten über Supabase).
+    - Die Adresse ist öffentlich und bleibt in Suchmaschinen und Web-Archiven auffindbar.
+      Alternativen: c/o-Adresse einer UKE-Klinik (nur mit deren Zustimmung) oder
+      Impressum-Service.
+    - Bei Übergabe/Ausscheiden der verantwortlichen Person das Impressum aktualisieren.
+    - Vorab mit Rechtsabteilung bzw. Pressestelle des UKE abstimmen.
+-->
+
 <section class="team-section">
     <div class="team-header">
-        <h1>Unser Team</h1>
-        <p>Die Menschen hinter den Ideen.</p>
+        <h1>Impressum</h1>
     </div>
 
-    <div class="team-grid">
-        <div class="team-card" onclick="openMember(this)" data-email="" data-phone="">
-            <img src="./images/1.jpeg" alt="">
-            <div class="team-info">
-                <h3>Hans Christian Schmidt</h3>
-                <span>Founder</span>
-            </div>
-        </div>
+    <div class="glass card" style="max-width: 640px; margin: 0 auto; line-height: 1.7;">
+        <h2 style="margin-top: 0;">SimLab – Students for Surgery</h2>
+        <p style="margin: 0 0 20px;">Studentische Initiative am Universitätsklinikum Hamburg-Eppendorf</p>
 
-        <div class="team-card" onclick="openMember(this)" data-email="" data-phone="">
-            <div class="team-info">
-                <h3>Axel Kirchhof</h3>
-                <span>Photographer</span>
-            </div>
-        </div>
+        <h3 style="margin-bottom: 4px;">Verantwortlich</h3>
+        <p style="margin: 0 0 20px;">
+            [Vorname Nachname]<br>
+            [Straße Nr.]<br>
+            [PLZ] Hamburg
+        </p>
 
-        <div class="team-card" onclick="openMember(this)" data-email="" data-phone="">
-            <div class="team-info">
-                <h3>Falk Gabriel Schubert</h3>
-                <span>Webdesign & 3D-Printing</span>
-            </div>
-        </div>
+        <h3 style="margin-bottom: 4px;">Kontakt</h3>
+        <p style="margin: 0;">
+            E-Mail: <a href="mailto:simlabhamburg@gmail.com" style="color: inherit; text-decoration: underline;">simlabhamburg@gmail.com</a>
+        </p>
     </div>
 </section>
-
-<!-- Overlay -->
-<!--<div class="team-overlay" id="teamOverlay">
-    <div class="overlay-content">
-        <span class="close" onclick="closeMember()">×</span>
-        <img id="overlayImg">
-        <h2 id="overlayName"></h2>
-        <h4 id="overlayRole"></h4>
-        <p id="overlayText"></p>
-    </div>
-</div>-->
-<div class="team-overlay" id="teamOverlay">
-    <div class="overlay-content" onclick="event.stopPropagation()">
-        <span class="close" onclick="closeMember()">×</span>
-
-        <img id="overlayImg">
-        <h2 id="overlayName"></h2>
-        <h4 id="overlayRole"></h4>
-        <p id="overlayText"></p>
-
-        <div class="contact-info">
-            <p><strong>Email:</strong> <span id="overlayEmail"></span></p>
-            <p><strong>Telefon:</strong> <span id="overlayPhone"></span></p>
-        </div>
-    </div>
-</div>
 
 </main>
 
@@ -117,6 +99,5 @@
     ]'
 ></glass-footer>
 
-<script src="js/impressum.js"></script>
 </body>
 </html>
